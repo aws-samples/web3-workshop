@@ -1,10 +1,10 @@
 # web3-workshop
 
-This repository contains all artifacts for the (Build Web3 on AWS)[https://catalog.workshops.aws/buildweb3] workshop.
+This repository contains all artifacts for the [Build Web3 on AWS](https://catalog.workshops.aws/buildweb3) workshop.
 
 ## Deployment
 
-The detailed deployment instructions can be found in the workshop (Build Web3 on AWS)[https://catalog.workshops.aws/buildweb3].
+The detailed deployment instructions can be found in the workshop [Build Web3 on AWS](https://catalog.workshops.aws/buildweb3).
 
 
 ## Development
@@ -20,7 +20,7 @@ To run e2e integration tests for module 1, execute the following steps:
 
 2. Add the required credentials to `./tests/module1/run_e2e_pipeline.sh`.
 
-3. Ensure that you have your (`aws cli` configured)[https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html] correctly and have it pointing to the right AWS account.
+3. Ensure that you have your [`aws cli` configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) correctly and have it pointing to the right AWS account.
 
 4. Export the required `CDK` environment variables to configure the AWS region and account used for the deployment. 
    ```sh
