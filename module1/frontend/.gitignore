@@ -1,0 +1,9 @@
+node_modules
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+# Override the .gitignore rules in the project root as this CDK is written in JS
+
+!*.js

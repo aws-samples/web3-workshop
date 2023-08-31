@@ -1,0 +1,540 @@
+{
+	"info": {
+		"_postman_id": "f6d5faaa-550e-43ca-b69a-8866248b4417",
+		"name": "Integration testing",
+		"description": "# ⛓️ Get started here\n\nPostman allows you to test your APIs using simple [Javascript code](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/). You can evaluate your response body, headers, cookies, and more using the [ChaiJS BDD](https://www.chaijs.com/api/bdd/) syntax.\n\nThis template guides you through the process of setting up an integration test to ensure that all individual components of an API function together seamlessly.\n\nThe API under test in this collection includes three endpoints for registering and receiving a token, accessing your unique generated name, and unregistering a token:\n\n- POST `/register`\n- POST `/unregister`\n- GET `/my-name`\n    \n\nBy setting up requests in the order of the operation, we can test the flow of data to and from the endpoints and ensure they work together as expected. We also verify that the data persists between requests on the back end.\n\n## 🔖 **How to use this template**\n\n**Step 1:** Check out the requests' documentation to learn more about -\n\n- what each request is meant to do.\n- the tests we've added against each one.\n    \n\n**Step 2:** Run this collection by clicking on \"Run\" or the by using the [Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/).\n\n<img src=\"https://content.pstmn.io/84019b0f-69c8-4c5f-98b9-2c90a6f9a0b1/Y29sbGVjdGlvbi1ydW5uZXItYnV0dG9uLmpwZWc=\" width=\"266\" height=\"103\">\n\n**Step 3:** To customize this template, replace the request URLs with your API endpoints and add or edit the tests if needed.\n\n## 💡Related templates\n\n[Regression testing](https://go.pstmn.io/regression-testing)  \n[Performance testing](https://go.pstmn.io/performance-testing)  \n[Contract testing](https://go.pstmn.io/contract-testing-template)  \n[Conditional workflow](https://go.pstmn.io/conditional-workflow)  \n[Mock data generation](https://go.pstmn.io/mock-data-generation)  \n[Common API vulnerabilities check](https://go.pstmn.io/common-API-vulnerabilities-check)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Mint Sentence NFT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {",
+							"    pm.response.to.have.status(200)",
+							"})",
+							"",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"0x\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"prompt\": \"my first sentence NFT\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}tokens/sentences",
+					"host": [
+						"{{baseUrl}}tokens"
+					],
+					"path": [
+						"sentences"
+					]
+				},
+				"description": "This request un-registers a token by using the token collection variable in the POST body.\n\nWe also added a test to ensure the response has a 200 OK status code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Sentence NFTs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"if (jsonData.nfts.length === 0) { // Some condition to decide if retrying the request is needed",
+							"  setTimeout(() => {}, 1000); // wait for 1 second before retrying",
+							"  postman.setNextRequest(pm.info.requestId); // retry the current request",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}tokens/sentences",
+					"host": [
+						"{{baseUrl}}tokens"
+					],
+					"path": [
+						"sentences"
+					]
+				},
+				"description": "This request uses the saved `token` collection variable to access a secret 'name' stored against that token.\n\nIn this request, we used the `token` collection variable as a query param to fetch the name generated for that token. We have added a test to check that a name is correctly returned."
+			},
+			"response": []
+		},
+		{
+			"name": "Get first Sentence NFT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"A contractAddress is returned\", () => {",
+							"    pm.expect(jsonData.nfts).to.be.an(\"array\")",
+							"    pm.expect(jsonData.nfts[0]).to.have.property('contractAddress');",
+							"    pm.expect(jsonData.nfts[0].contractAddress).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"An owner is returned\", () => {",
+							"    pm.expect(jsonData.nfts[0]).to.have.property('owner');",
+							"    pm.expect(jsonData.nfts[0].owner).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"A collectionId is returned\", () => {",
+							"    pm.expect(jsonData.nfts[0]).to.have.property('collectionId');",
+							"    pm.expect(jsonData.nfts[0].collectionId).to.be.a('string');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}tokens/sentences/1",
+					"host": [
+						"{{baseUrl}}tokens"
+					],
+					"path": [
+						"sentences",
+						"1"
+					]
+				},
+				"description": "This request uses the saved `token` collection variable to access a secret 'name' stored against that token.\n\nIn this request, we used the `token` collection variable as a query param to fetch the name generated for that token. We have added a test to check that a name is correctly returned."
+			},
+			"response": []
+		},
+		{
+			"name": "Burn First Sentence NFT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {",
+							"    pm.response.to.have.status(200)",
+							"})",
+							"",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"0x\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}tokens/sentences/1",
+					"host": [
+						"{{baseUrl}}tokens"
+					],
+					"path": [
+						"sentences",
+						"1"
+					]
+				},
+				"description": "This request un-registers a token by using the token collection variable in the POST body.\n\nWe also added a test to ensure the response has a 200 OK status code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Sentence NFTs (one)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"if (jsonData.nfts.length === 1) { // Some condition to decide if retrying the request is needed",
+							"  setTimeout(() => {}, 1000); // wait for 1 second before retrying",
+							"  postman.setNextRequest(pm.info.requestId); // retry the current request",
+							"}",
+							"",
+							"pm.test(\"Returns 200 OK status\", () => {",
+							"    pm.response.to.have.status(200)",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}tokens/sentences",
+					"host": [
+						"{{baseUrl}}tokens"
+					],
+					"path": [
+						"sentences"
+					]
+				},
+				"description": "This request uses the saved `token` collection variable to access a secret 'name' stored against that token.\n\nIn this request, we used the `token` collection variable as a query param to fetch the name generated for that token. We have added a test to check that a name is correctly returned."
+			},
+			"response": []
+		},
+		{
+			"name": "Get burned Sentence NFT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 500\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}tokens/sentences/1",
+					"host": [
+						"{{baseUrl}}tokens"
+					],
+					"path": [
+						"sentences",
+						"1"
+					]
+				},
+				"description": "This request uses the saved `token` collection variable to access a secret 'name' stored against that token.\n\nIn this request, we used the `token` collection variable as a query param to fetch the name generated for that token. We have added a test to check that a name is correctly returned."
+			},
+			"response": []
+		},
+		{
+			"name": "Mint Second Sentence NFT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {",
+							"    pm.response.to.have.status(200)",
+							"})",
+							"",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"0x\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"prompt\": \"my second sentence NFT\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}tokens/sentences",
+					"host": [
+						"{{baseUrl}}tokens"
+					],
+					"path": [
+						"sentences"
+					]
+				},
+				"description": "This request un-registers a token by using the token collection variable in the POST body.\n\nWe also added a test to ensure the response has a 200 OK status code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Sentence NFTs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"if (jsonData.nfts.length === 0) { // Some condition to decide if retrying the request is needed",
+							"  setTimeout(() => {}, 1000); // wait for 1 second before retrying",
+							"  postman.setNextRequest(pm.info.requestId); // retry the current request",
+							"}",
+							"",
+							"pm.test(\"Returns 200 OK status\", () => {",
+							"    pm.response.to.have.status(200)",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}tokens/sentences",
+					"host": [
+						"{{baseUrl}}tokens"
+					],
+					"path": [
+						"sentences"
+					]
+				},
+				"description": "This request uses the saved `token` collection variable to access a secret 'name' stored against that token.\n\nIn this request, we used the `token` collection variable as a query param to fetch the name generated for that token. We have added a test to check that a name is correctly returned."
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer Second Sentence NFT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 status\", () => {",
+							"    pm.response.to.have.status(200)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"toAddress\": \"0x9ab28688aD825386356cD340761b023f9F8c307D\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}tokens/sentences/2",
+					"host": [
+						"{{baseUrl}}tokens"
+					],
+					"path": [
+						"sentences",
+						"2"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				},
+				"description": "This request un-registers a token by using the token collection variable in the POST body.\n\nWe also added a test to ensure the response has a 200 OK status code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get second Sentence NFT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"if (jsonData.nfts[0].owner !== \"0x9ab28688aD825386356cD340761b023f9F8c307D\") { // Some condition to decide if retrying the request is needed",
+							"  setTimeout(() => {}, 1000); // wait for 1 second before retrying",
+							"",
+							"  postman.setNextRequest(pm.info.requestId); // retry the current request",
+							"} else {",
+							"    pm.test(\"Body includes new owner's address\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"0x9ab28688aD825386356cD340761b023f9F8c307D\");",
+							"});",
+							"}",
+							"",
+							"pm.test(\"Returns 200 OK status\", () => {",
+							"    pm.response.to.have.status(200)",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}tokens/sentences/2",
+					"host": [
+						"{{baseUrl}}tokens"
+					],
+					"path": [
+						"sentences",
+						"2"
+					]
+				},
+				"description": "This request uses the saved `token` collection variable to access a secret 'name' stored against that token.\n\nIn this request, we used the `token` collection variable as a query param to fetch the name generated for that token. We have added a test to check that a name is correctly returned."
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "baseUrl",
+			"value": "https://postman-integration-testing.glitch.me/"
+		}
+	]
+}

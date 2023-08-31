@@ -1,0 +1,8 @@
+{
+  "goerli": {
+    "GenerativeAINFT": {
+      "address": "0xfD2Be0615bE9B0ff2cCE2fea8595C3Dd89c97722",
+      "startBlock": 8785156
+    }
+  }
+}

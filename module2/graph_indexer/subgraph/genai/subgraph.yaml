@@ -1,0 +1,58 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: GenerativeAINFT
+    network: goerli
+    source:
+      address: "<HERE GOES YOUR ADDRESS>"
+      abi: GenerativeAINFT
+      startBlock: 9411701
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - GenAINFTMinted
+        - Approval
+        - ApprovalForAll
+        - MAXNFTsUpdated
+        - OwnershipTransferred
+        - Paused
+        - Transfer
+        - Unpaused
+      abis:
+        - name: GenerativeAINFT
+          file: ./abis/GenerativeAINFT.json
+      eventHandlers:
+        - event: GenAINFTMinted(indexed address,indexed address,uint256,string)
+          handler: handleGenAINFTMinted
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: MAXNFTsUpdated(uint256,uint256)
+          handler: handleMAXNFTsUpdated
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Paused(address)
+          handler: handlePaused
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+        - event: Unpaused(address)
+          handler: handleUnpaused
+      file: ./src/generative-ainft.ts
+templates:
+  - name: TokenMetadata
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/ipfs-handler.ts
+      handler: handleTokenMetadata
+      entities:
+        - TokenMetadata
+      abis:
+        - name: GenerativeAINFT
+          file: ./abis/GenerativeAINFT.json

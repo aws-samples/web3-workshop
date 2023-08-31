@@ -1,0 +1,86 @@
+model_endpoint_name_key:
+- txt2img_endpoint
+bucket_name:
+- consensus2023-image-gen-bucket
+art_list:
+- ross tran
+- akihiko yoshida
+- louis wain
+- corben richard
+- noah bradley
+- peter mohrbacher
+- greg rutkowski
+- charlie bowater
+- artgerm
+- makoto shinkai
+- alphonse mucha
+- thomas kinkade
+- joshua hite
+- miles yoshida
+- artgermwlop
+- deviantart
+- cgsociety
+- artstation
+- conceptart,
+- beth cavener
+- Donato Giancola
+- Joseph Christian Leyendecker
+- Jin Kagetsu
+- luis royo
+- stanley lau
+- craig mullins
+- h r giger
+- magali villeneuve
+beauty_words:
+- intricate
+- elegant
+- vibrant
+- (Digital Artwork:1.2)
+- (Depth of field:1.2)
+negative_words:
+- (deformed iris, deformed pupils)
+- (text)
+- out of frame
+- low quality
+- jpeg artifacts
+- (bad art:1.1)
+- plain
+- dull
+- (blurry:1.4)
+- disfigured
+- bad art
+- deformed
+- poorly drawn
+- strange colors
+- blurry
+- boring
+- sketch
+- lacklustre
+- religious figure
+- religion
+- race
+- nudity
+- cropped
+- genitalia
+- nipples
+surprise_words:
+- A city skyline at sunset, with the sun setting behind a large skyscraper
+- A fantastical underwater world, with brightly colored coral and sea creatures
+- A mystical forest with a glowing, magical tree at the center
+- A futuristic metropolis with flying cars and towering buildings
+- A surreal landscape with floating islands and a rainbow-colored sky
+- A cozy cabin in the woods, surrounded by snow-covered trees and a peaceful winter landscape
+- A lush garden with vibrant flowers and a fountain at the center
+- A bustling marketplace in a vibrant, colorful city
+- A dramatic stormy sky with lightning striking a lone tree on a hill
+- An otherworldly alien landscape with strange, twisting rock formations and an eerie green sky
+- A group of elephants bathing in a river, surrounded by lush greenery and towering trees
+- A majestic eagle soaring high above a rugged mountain landscape.
+- A pack of wolves running through a snowy forest, with a full moon in the sky
+- A family of meerkats standing at attention, watching out for danger in the desert
+- A group of dolphins leaping out of the water in the middle of the ocean, with a colorful sunset in the background
+- A pride of lions resting in the shade of a large acacia tree on the savannah
+- A group of penguins huddled together on an icy shore, with an aurora borealis lighting up the night sky
+- A curious raccoon exploring a city park, with the skyscrapers towering above
+- A pair of giraffes standing tall in a sun-drenched grassland, with a herd of gazelles grazing nearby
+- A playful pod of seals swimming in crystal clear waters, surrounded by icebergs and snow-capped mountains

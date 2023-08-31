@@ -1,0 +1,8 @@
+aws-cdk-lib==2.83.1
+constructs>=10.0.0,<11.0.0
+streamlit
+requests
+jinja2
+matplotlib
+boto3
+sagemaker

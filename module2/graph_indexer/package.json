@@ -1,0 +1,25 @@
+{
+  "name": "the_graph-service",
+  "version": "0.1.0",
+  "bin": {
+    "the_graph-service": "bin/the_graph-service.js"
+  },
+  "scripts": {
+    "build": "echo \"The build step is not required when using JavaScript!\" && exit 0",
+    "cdk": "cdk",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "aws-cdk": "2.88.0",
+    "jest": "^29.4.1"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-apigatewayv2-alpha": "2.88.0-alpha.0",
+    "@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.88.0-alpha.0",
+    "aws-cdk-lib": "2.88.0",
+    "cdk-nag": "2.27.59",
+    "constructs": "10.2.68",
+    "graphql": "16.7.1",
+    "pg": "8.11.1"
+  }
+}
