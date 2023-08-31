@@ -8,11 +8,14 @@ alchemy_policy_id=${2}
 alchemy_goerli_api_key=${3}
 nft_storage_api_token=${4}
 
+parameter_stack_name="Web3WorkshopParametersStack"
+parameter_stack_name_lc=$(echo "${parameter_stack_name}" | awk '{print tolower($0)}')
 # parameters
 cd module1/parameters
 
 # check if the stack already exits
-if ! aws describe-stacks --stack-name Web3WorkshopParametersStack 2>/dev/null; then
+if ! aws cloudformation describe-stacks --stack-name ${parameter_stack_name} &> /dev/null && \
+ ! aws cloudformation describe-stacks --stack-name ${parameter_stack_name_lc} &> /dev/null; then
     start=`date +%s`
     npm install #&& npm audit fix --force
     cdk synth && cdk deploy Web3WorkshopParametersStack \
