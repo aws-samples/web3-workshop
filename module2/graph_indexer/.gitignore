@@ -1,0 +1,14 @@
+node_modules
+
+generated
+build
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+subgraph/bayc/node_modules
+subgraph/bayc/generated
+subgraph/bayc/build
+
+cdk.context.json

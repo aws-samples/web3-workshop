@@ -1,0 +1,45 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: SentencesNFT
+    network: goerli
+    source:
+      address: "0x4Bb49799C0659CE4FdAD6eB831748e9F28FC0750"
+      abi: SentencesNFT
+      startBlock: 9266269
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - SentenceNFTFTMinted
+        - Approval
+        - ApprovalForAll
+        - MAXNFTsUpdated
+        - OwnershipTransferred
+        - Paused
+        - Transfer
+        - Unpaused
+      abis:
+        - name: SentencesNFT
+          file: ./abis/SentencesNFT.abi.json
+      eventHandlers:
+        - event: SentenceNFTFTMinted(indexed address,indexed address,uint256,string)
+          handler: handleSentenceNFTFTMinted
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: MAXNFTsUpdated(uint256,uint256)
+          handler: handleMAXNFTsUpdated
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Paused(address)
+          handler: handlePaused
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+        - event: Unpaused(address)
+          handler: handleUnpaused
+      file: ./src/sentences-nft.ts
