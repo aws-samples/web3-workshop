@@ -1,0 +1,8 @@
+{
+  "contractType": "ERC721",
+  "ownerAddress": "0x10f97d76b7c9814F9a7C0dAfc1a8b94D9E817EBc",
+  "invocationFunction": "deploy",
+  "nftCollectionName": "genai",
+  "userKeyId": "97bc1268-d756-4087-98d0-f73d638e9867",
+  "sub": "1296c4cf-7bcf-43c0-8fc4-c89a64d75dac"
+}

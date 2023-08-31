@@ -1,0 +1,120 @@
+type SentenceNFTFTMinted @entity(immutable: true) {
+  id: Bytes!
+  _from: Bytes! # address
+  _to: Bytes! # address
+  _tokenId: BigInt! # uint256
+  _tokenUri: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Approval @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  approved: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ApprovalForAll @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  operator: Bytes! # address
+  approved: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type MAXNFTsUpdated @entity(immutable: true) {
+  id: Bytes!
+  _from: BigInt! # uint256
+  _to: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Paused @entity(immutable: true) {
+  id: Bytes!
+  account: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity(immutable: true) {
+  id: Bytes!
+  from: Bytes! # address
+  to: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Unpaused @entity(immutable: true) {
+  id: Bytes!
+  account: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Contract @entity {
+  id: Bytes! # address
+  name: String!
+  symbol: String!
+  maxNFTs: BigInt!
+  tokens: [Token!]! @derivedFrom(field: "contract")
+  tokenIds: [BigInt!]!
+}
+
+type Token @entity {
+  id: Bytes!
+  tokenId: BigInt!
+  tokenUri: String
+  metadata: TokenMetadata
+  mintTx: Bytes
+  owner: Account!
+  contract: Contract!
+  updatedAtTimestamp: BigInt!
+  previousOwners: [PrevTokenAccount!]! @derivedFrom(field: "token")
+}
+
+type PrevTokenAccount @entity {
+  id: Bytes! # Set to `account.id.concat(token.id)`
+  account: Account!
+  token: Token!
+}
+
+type TokenMetadata @entity {
+  id: Bytes!
+  image: String
+  description: String
+  name: String
+  attributes: [Attribute!]
+}
+
+type Attribute @entity {
+  id: Bytes!
+  key: String!
+  value: String!
+}
+
+type Account @entity {
+  id: Bytes! # address
+  tokens: [Token!]! @derivedFrom(field: "owner")
+}

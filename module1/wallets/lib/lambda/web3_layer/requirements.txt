@@ -1,0 +1,6 @@
+boto3==1.26.137
+web3==6.4.0
+asn1tools==0.166.0
+urllib3==1.26.7
+aws-lambda-powertools==2.15.0
+ecdsa==0.18.0

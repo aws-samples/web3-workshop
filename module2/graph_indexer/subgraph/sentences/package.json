@@ -1,0 +1,20 @@
+{
+  "name": "sentences",
+  "license": "MIT-0",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "create": "graph create --node http://${GRAPH_IP}:8020/ sentencesNFT",
+    "remove": "graph remove --node http://${GRAPH_IP}:8020/ sentencesNFT",
+    "deploy": "graph deploy --node http://${GRAPH_IP}:8020/ --ipfs http://${GRAPH_IP}:5001 sentencesNFT",
+    "test": "graph test"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.53.0",
+    "@graphprotocol/graph-ts": "0.31.0",
+    "as-base64": "0.2.0"
+  },
+  "devDependencies": {
+    "matchstick-as": "0.5.0"
+  }
+}
