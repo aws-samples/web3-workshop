@@ -5,50 +5,14 @@ set +x
 set -e
 
 # list of modules
-cdk=true
-newman=true
-parameters=true
+
 wallets=true
 pipeline=true
 blockchain_handler=true
 api_gateway=true
 
-rpc_endpoint=${1}
-alchemy_policy_id=${2}
-alchemy_goerli_api_key=${3}
-nft_storage_api_token=${4}
-
-region=$(aws configure get region)
-
-if [[ ${cdk} = true ]]; then
-    npm install cdk@2.89.0
-fi
-
-if [[ ${newman} = true ]]; then
-    npm install -g newman@5.3.2
-fi
 
 cd module1
-
-# parameters
-if [[ ${parameters} = true ]]; then
-    cd parameters
-    
-    start=`date +%s`
-    npm install #&& npm audit fix --force
-    cdk synth && cdk deploy Web3WorkshopParametersStack \
-    --parameters rpcEndpoint="${rpc_endpoint}" \
-    --parameters alchemyPolicyId="${alchemy_policy_id}" \
-    --parameters alchemyGoerliAPIKey="${alchemy_goerli_api_key}" \
-    --parameters nftStorageAPIToken="${nft_storage_api_token}" \
-    --require-approval=never
-    
-    end=`date +%s`
-    
-    parameters_runtime=$( echo "$end - $start" | bc -l )
-    echo "Web3WorkshopParametersStack: ${parameters_runtime}s" > ../deployment_times
-    cd ..
-fi
 
 # wallets
 if [[ ${wallets} = true ]]; then
