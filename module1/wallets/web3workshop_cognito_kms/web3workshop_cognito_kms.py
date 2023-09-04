@@ -235,7 +235,7 @@ class Web3WorkshopCognitoKMSStack(Stack):
             "userPoolAppClient",
             user_pool=user_pool,
             auth_flows=cognito.AuthFlow(user_password=True, user_srp=True),
-            id_token_validity=Duration.minutes(240)
+            id_token_validity=Duration.days(1)
         )
 
         # unique suffix to avoid duplicates
