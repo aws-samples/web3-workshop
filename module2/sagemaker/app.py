@@ -9,8 +9,11 @@ from util.sagemaker_util import *
 # Text to Image model parameters
 TXT2IMG_MODEL_ID = "model-txt2img-stabilityai-stable-diffusion-v2-1-base"
 
+# For private AWS accounts
+TXT2IMG_INFERENCE_INSTANCE_TYPE = "ml.g5.xlarge"
+
 # For Development
-TXT2IMG_INFERENCE_INSTANCE_TYPE = "ml.g5.2xlarge"
+# TXT2IMG_INFERENCE_INSTANCE_TYPE = "ml.g5.2xlarge"
 
 # For Production
 #TXT2IMG_INFERENCE_INSTANCE_TYPE = "ml.g5.12xlarge"

@@ -6,9 +6,9 @@ set -e
 
 cd module2
 
-# cd graph_indexer
-# cdk destroy Web3WorkshopTheGraphServiceStack --force || true
-# cd ..
+cd graph_indexer
+cdk destroy Web3WorkshopTheGraphServiceStack --force || true
+cd ..
 
 cd sagemaker
 if [[ ! -d .venv ]]; then
@@ -33,3 +33,5 @@ cd ../..
 cd genai_nfts/genai-nft-pipeline
 cdk destroy Web3WorkshopGenAINFTPipelineStack --force || true
 cd ..
+
+aws ssm delete-parameter --region ${CDK_DEPLOY_REGION} --name /web3/contracts/erc721/genai/userophash || true
