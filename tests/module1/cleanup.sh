@@ -49,3 +49,5 @@ cd ..
 cd parameters
 cdk destroy Web3WorkshopParametersStack --force || true
 cd ..
+
+aws ssm delete-parameter --region ${CDK_DEPLOY_REGION} --name /app/cloud9_sg || true
