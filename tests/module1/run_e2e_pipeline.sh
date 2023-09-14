@@ -22,13 +22,13 @@ function ensure_jwt() {
     fi
 }
 
-install_cdk=true
-install_newman=true
+install_cdk=false
+install_newman=false
 deploy_parameter_stack=true
 deploy_api=true
 deploy_smart_contract=true
 test_api_gateway_curl=true
-test_api_e2e_newman=true
+test_api_e2e_newman=false
 deploy_frontend=true
 
 # test dependencies

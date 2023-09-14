@@ -27,7 +27,7 @@ if [[ ${deploy_smart_contract} = true ]]; then
         
     done
     
-    alchemy_goerli_api_key=$(aws ssm get-parameter --name "/web3/aa/goerli_api_key" --region ${CDK_DEPLOY_REGION} | jq -r ".Parameter.Value" )
+    alchemy_goerli_api_key=$(aws ssm get-parameter --name "/web3/aa/goerli_api_key" --region ${CDK_DEPLOY_REGION} | jq -r ".Parameter.Value")
     
     while true; do
         user_op_status=$(curl -s --request POST \
