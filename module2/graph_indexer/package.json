@@ -19,7 +19,7 @@
     "aws-cdk-lib": "2.88.0",
     "cdk-nag": "2.27.59",
     "constructs": "10.2.68",
-    "graphql": "16.7.1",
+    "graphql": "16.8.1",
     "pg": "8.11.1"
   }
 }
