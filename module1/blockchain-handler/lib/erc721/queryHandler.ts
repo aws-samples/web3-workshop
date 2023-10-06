@@ -302,20 +302,6 @@ export async function queryGraphForNFT(
   return { nfts: emptyNfts };
 }
 
-// function graphTokenMetadataToSentenceTokenMetadata({
-//   name,
-//   description,
-//   image,
-//   attributes
-// }: GraphToken['metadata']): SentenceNftMetdata {
-//   return {
-//     name,
-//     description,
-//     image,
-//     attributes: attributes.map(({ key, value }) => ({ trait_type: key, value }))
-//   };
-// }
-
 function parseGraphTokenResponse(token: GraphToken, nftCollectionId: string): Nft {
   return {
     contractAddress: token.contract.id,
@@ -323,15 +309,7 @@ function parseGraphTokenResponse(token: GraphToken, nftCollectionId: string): Nf
     owner: token.owner.id,
     id: token.tokenId,
     imageUrl: token.ipfsUri.image,
-    description:
-      token.ipfsUri.name ||
-      token.ipfsUri.description,
-      // ||
-      // parseSentenceNftMetadata(
-      //   token.contract.id,
-      //   token.tokenId,
-      //   graphTokenMetadataToSentenceTokenMetadata(token.metadata)
-      // ),
+    description: token.ipfsUri.name || token.ipfsUri.description
   };
 }
 
