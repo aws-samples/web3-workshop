@@ -31,5 +31,6 @@ jq -R 'split(".") | .[1] | @base64d | fromjson' <<< "${jwt}"
 # ./tests/module1/test_api_gateway.sh ${jwt}
 # ./tests/module1/deploy_frontend.sh
 
-# ./tests/deploy_the_graph.sh
+./tests/module2/deploy_the_graph.sh
+./tests/module2/redeploy_frontend.sh
 #./tests/module2/cleanup.sh

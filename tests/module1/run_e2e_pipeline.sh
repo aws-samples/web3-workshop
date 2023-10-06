@@ -4,10 +4,16 @@
 set +x
 set -e
 
-RPC_ENDPOINT=""
-ALCHEMY_POLICY_ID=""
-ALCHEMY_API_KEY=""
-NFT_STORAGE_API_TOKEN=""
+# RPC_ENDPOINT=""
+# ALCHEMY_POLICY_ID=""
+# ALCHEMY_API_KEY=""
+# NFT_STORAGE_API_TOKEN=""
+
+# Values set by CN for testing
+RPC_ENDPOINT="https://nd-zgcmocu7hzdrbhqz4oovcxgoea.t.ethereum.managedblockchain.us-east-1.amazonaws.com/?billingtoken=iold5d2vXZyvM6OI2OnLZO8nVcE3kl3mxP93Y5a9-T"
+ALCHEMY_POLICY_ID="eb90adf8-4a68-423c-a2e1-37ca1533ddd8"
+ALCHEMY_API_KEY="6vdjm044Sni-HFuy_ixSwX7ebUKonecZ"
+NFT_STORAGE_API_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJmQzIzNTNGNDVjMkY1YjBERWViQTIwNDVGMzgwZTVhMzMxODdCMmQiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4OTAxNDg3MjYzMiwibmFtZSI6IndlYjN3b3Jrc2hvcCJ9.IMNQ1Ul6W0QxaGn7FxNhpM8IpBou9ZWgfxUusH1xaeQ"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 

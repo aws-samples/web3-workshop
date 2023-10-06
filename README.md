@@ -36,6 +36,8 @@ To run e2e integration tests for module 1, execute the following steps:
 ### Module 2
 Module 2 requires module 1 to be fully configured and deployed in the same AWS account and region. Please ensure that all steps defined in `Module 1` have been executed successfully.
 
+The deployment script requires [yq](https://github.com/mikefarah/yq) to modify YAML files on your local machine. It also assumes that you're working on a local machine (instead of a Cloud9 instance). If you don't have `yq` installed, the easiest way on a Mac is using homebrew: `brew install yq`. For other architectures, see the [installation guide](https://github.com/mikefarah/yq/#install).
+
 1. Run the e2e script:
    ```sh
    ./tests/module2/run_e2e_pipeline.sh
