@@ -175,15 +175,10 @@ export async function queryGraphForNFT(
               id
             }
             updatedAtTimestamp
-            tokenUri
-            metadata {
+            ipfsUri {
               name
               image
               description
-              attributes {
-                key
-                value
-              }
             }
             previousOwners {
               id
@@ -220,21 +215,16 @@ export async function queryGraphForNFT(
         tokens(where: { tokenId: $tokenId }) {
           tokenId
           updatedAtTimestamp
-          tokenUri
           owner {
             id
           }
           contract {
             id
           }
-          metadata {
+          ipfsUri {
             name
             image
             description
-            attributes {
-              key
-              value
-            }
           }
           previousOwners {
             id
@@ -269,21 +259,16 @@ export async function queryGraphForNFT(
       tokens(skip: $skip, first: $first) {
         tokenId
         updatedAtTimestamp
-        tokenUri
         owner {
           id
         }
         contract {
           id
         }
-        metadata {
+        ipfsUri {
           name
           image
           description
-          attributes {
-            key
-            value
-          }
         }
         previousOwners {
           id
@@ -317,36 +302,14 @@ export async function queryGraphForNFT(
   return { nfts: emptyNfts };
 }
 
-function graphTokenMetadataToSentenceTokenMetadata({
-  name,
-  description,
-  image,
-  attributes
-}: GraphToken['metadata']): SentenceNftMetdata {
-  return {
-    name,
-    description,
-    image,
-    attributes: attributes.map(({ key, value }) => ({ trait_type: key, value }))
-  };
-}
-
 function parseGraphTokenResponse(token: GraphToken, nftCollectionId: string): Nft {
   return {
     contractAddress: token.contract.id,
     collectionId: nftCollectionId,
     owner: token.owner.id,
     id: token.tokenId,
-    imageUrl: token.metadata.image,
-    description:
-      token.metadata.name ||
-      token.metadata.description ||
-      parseSentenceNftMetadata(
-        token.contract.id,
-        token.tokenId,
-        graphTokenMetadataToSentenceTokenMetadata(token.metadata)
-      ),
-    attributes: token.metadata.attributes
+    imageUrl: token.ipfsUri.image,
+    description: token.ipfsUri.name || token.ipfsUri.description
   };
 }
 

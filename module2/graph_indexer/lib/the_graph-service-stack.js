@@ -40,10 +40,12 @@ class TheGraphServiceStack extends Stack {
       this,
       '/app/log_level'
     )
-    const allowedSG = StringParameter.valueForStringParameter(
+    const cloud9_sg = StringParameter.valueForStringParameter(
       this,
       '/app/cloud9_sg'
     )
+    const allowedSG = cloud9_sg !== 'none' ? undefined : cloud9_sg
+
     const clientUrl = StringParameter.valueForStringParameter(
       this,
       '/web3/rpc_endpoint'
