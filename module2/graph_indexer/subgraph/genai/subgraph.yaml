@@ -8,7 +8,7 @@ dataSources:
     source:
       address: "<HERE GOES YOUR ADDRESS>"
       abi: GenerativeAINFT
-      startBlock: 9411701
+      startBlock: <HERE GOES YOUR STARTING BLOCK>
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
