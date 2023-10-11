@@ -104,7 +104,7 @@ def query(input_payload):
 def parse_response(query_response):
     """Parse response and return generated image and the prompt"""
     response_dict = json.loads(query_response)
-    images_artifacts = response_dict.get("artifacts", [])
+    images_artifacts = response_dict.get("artifacts")
     
     images_decoded = [base64.b64decode(img['base64'].encode()) for img in images_artifacts if 'base64' in img]
     images = [Image.open(BytesIO(img)).convert("RGB") for img in images_decoded]
