@@ -21,6 +21,15 @@ export class GenAILambdaStack extends Stack {
       `arn:aws:lambda:${this.region}:336392948345:layer:AWSSDKPandas-Python311:1`
     );
 
+    const bedrockCompatibleBoto3 = new lambda.LayerVersion(
+      this,
+      "BedrockCompatibleBoto3Layer",
+      {
+        compatibleRuntimes:[lambda.Runtime.PYTHON_3_9],
+        code: lambda.Code.fromAsset("../genai-assets/bedrock-compatible-sdk.zip"),
+      }
+    )
+
     // Create the S3 bucket
     this.s3Bucket = new s3.Bucket(this, "GenAIS3Bucket", {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -51,7 +60,10 @@ export class GenAILambdaStack extends Stack {
         entry: "lambda/InvokeSagemakerLambdaAssets",
         index: "InvokeExternalSagemakerEndpoint.py",
         handler: "lambda_handler",
-        layers: [pandasLayer],
+        layers: [
+          pandasLayer,
+          bedrockCompatibleBoto3
+        ],
         timeout: cdk.Duration.seconds(300),
         environment: {
           BUCKET_NAME: this.s3Bucket.bucketName,
