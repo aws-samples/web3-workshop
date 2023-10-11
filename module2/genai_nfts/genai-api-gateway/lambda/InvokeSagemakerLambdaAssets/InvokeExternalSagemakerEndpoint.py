@@ -80,43 +80,36 @@ def get_ssm_parameter(key) -> str:
 
 
 def query(input_payload):
-    API_KEY = get_ssm_parameter("/app/sagemaker/endpoint/apikey")
-    payload = {
-        'query': input_payload
-    }
-    headers = {
-        'x-api-key': API_KEY,
-        'Content-Type': 'application/json'
-    }
-    payload_json = json.dumps(payload)
-    API_URL = get_ssm_parameter("/app/sagemaker/endpoint/apiurl")
-    response = requests.post(API_URL, data=payload_json, headers=headers)
-    query_response = response.content.decode('utf-8')
+    client = boto3.client('bedrock-runtime')
+    response = client.invoke_model(
+        accept='application/json',
+        body=json.dumps(input_payload),
+        contentType='application/json',
+        modelId='stability.stable-diffusion-xl-v0'
+    )
+
+   # query_response = response.content.decode('utf-8')
     
-    if response.status_code != 200:
-        print(f"status code: {response.status_code}")
-        print(f"response: {query_response}")
-        print(f"api key: {API_KEY}")
-        print(f"api url: {API_URL}")
+    status_code = response["ResponseMetadata"]["HTTPStatusCode"]
+    response_body = response.get("body").read()
+    if status_code != 200:
+        print(f"status code: {status_code}")
+        print(f"response: {response}")
     
-    return query_response
+    
+    
+    return response_body
 
 
 def parse_response(query_response):
     """Parse response and return generated image and the prompt"""
     response_dict = json.loads(query_response)
-    images = response_dict["generated_images"]
-    prompt = response_dict["prompt"]
-    if isinstance(images[0], str):
-        # Images are in JPEG format
-        images = [base64.b64decode(img.encode()) for img in images]
-        images = [Image.open(BytesIO(img)).convert("RGB") for img in images]
-    else:
-        # Images are in nested array format
-        images = [np.array(img) for img in images]
-        # adding RGB mnode for np arrays
-        images = [Image.fromarray(np.uint8(img), mode='RGB') for img in images]
-    return images, prompt
+    images_artifacts = response_dict.get("artifacts", [])
+    
+    images_decoded = [base64.b64decode(img['base64'].encode()) for img in images_artifacts if 'base64' in img]
+    images = [Image.open(BytesIO(img)).convert("RGB") for img in images_decoded]
+    
+    return images
 
 
 def upload_image_to_s3(img, prompt):
@@ -146,9 +139,10 @@ def process_text(event):
     which is then uploaded to S3
 
     """
-    input_payload = create_input_payload(event)
+    input_payload, prompt = create_input_payload(event)
     query_response = query(input_payload)
-    images, prompt = parse_response(query_response)
+    images = parse_response(query_response)
+
     s3_urls = []
     for image in images:
         s3_url = upload_image_to_s3(image, prompt)
@@ -171,7 +165,6 @@ def create_input_payload(event):
     else:
         create payload
     """
-    negative_prompt = ", ".join(negative_words)
     beautify_args = ", ".join(beauty_words)
     art_style = ", ".join(random.sample(art_list, 3))
     surprise_word = random.sample(surprise_words, 1)[0]
@@ -189,14 +182,34 @@ def create_input_payload(event):
     # user-driven input
     else:
         input_prompt = event['prompt']
+    
+
     input_payload = {
-        "prompt": input_prompt,
-        "negative_prompt": negative_prompt,
-        "width": 512,
-        "height": 512,
-        "num_images_per_prompt": 1,
-        "num_inference_steps": 50,
-        "guidance_scale": 7.5,
-        # "seed": 1,
+        "text_prompts":[
+            {"text":input_prompt}
+        ],
+        "cfg_scale":7.5,
+        #"seed":0,
+        "steps":50
     }
-    return input_payload
+    return input_payload, input_prompt
+
+
+import boto3
+import json
+client = boto3.client('bedrock-runtime')
+input_prompt = "car flying in space"
+input_payload = {
+    "text_prompts":[
+        {"text":input_prompt}
+        ],
+        "cfg_scale":7.5,
+        #"seed":0,
+        "steps":50
+        }
+response = client.invoke_model(
+    accept='application/json',
+    body=json.dumps(input_payload),
+    contentType='application/json',
+    modelId='stability.stable-diffusion-xl-v0'
+)
