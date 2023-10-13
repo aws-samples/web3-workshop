@@ -34,7 +34,7 @@ bedrock_model_id = os.environ.get('BEDROCK_MODEL_ID')
 def lambda_handler(event, context):
     try:
         print(event)
-        s3_urls, input_payload = process_text(event)
+        s3_urls, input_prompt = process_text(event)
         prompt = event['prompt']
         jwtBase64 = event['jwt'][7:]  # Remove 'Bearer ' at the start
         jwtToken = jwt.decode(jwtBase64, algorithms=["RS256"], options={"verify_signature": False})
@@ -44,7 +44,7 @@ def lambda_handler(event, context):
             "body": json.dumps({
                 "s3_urls": s3_urls,
                 "prompt": prompt,
-                "Sagemaker_input": input_payload["prompt"],
+                "Sagemaker_input": input_prompt,
                 "ownerAddress": jwtToken['public_address'],
                 "walletAddress": jwtToken['account_address'],
                 "userKeyId": jwtToken['key_id'],
@@ -148,7 +148,7 @@ def process_text(event):
         s3_urls.append(s3_url)
     print('s3_urls')
     print(s3_urls[0])
-    return s3_urls, input_payload
+    return s3_urls, prompt
 
 
 def create_input_payload(event):
