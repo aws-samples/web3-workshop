@@ -41,15 +41,15 @@ export class GenaiApiGatewayStack extends cdk.Stack {
     });
 
     // Add StepFunction for GenAI NFTs
-    // Create the Sagemaker GenAI StepFunction workflow and StateMachine
+    // Create the StepFunction workflow and StateMachine to generate images
     const sfnGenAIConstruct = new SFNWorkflowConstruct(
       this,
       "ImageGenWorkflowX",
       {
         WorkflowName: "ImageGenWorkflowX",
-        SagemakerImageGenLambdaArn: StringParameter.valueForStringParameter(
+        ImageGenLambdaArn: StringParameter.valueForStringParameter(
           this,
-          "/app/nft/SagemakerEndpointLambdaFunctionArn"
+          "/app/nft/ImageGenerationLambdaFunctionArn"
         ),
         IPFSPublishLambdaArn: StringParameter.valueForStringParameter(
           this,

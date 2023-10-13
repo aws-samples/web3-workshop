@@ -10,7 +10,7 @@ import { AwsSolutionsChecks, NagSuppressions } from "cdk-nag";
 
 const app = new App();
 
-// Create the Sagemaker GenAI StepFunction workflow construct
+// Create the GenAI StepFunction workflow construct
 const genAIConstruct = new GenAILambdaStack(
   app,
   "Web3WorkshopGenAILambdaStack", {

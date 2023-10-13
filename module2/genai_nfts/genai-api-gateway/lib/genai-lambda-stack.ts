@@ -7,6 +7,7 @@ import * as cdk from "aws-cdk-lib";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import * as assets from "aws-cdk-lib/aws-s3-assets"
 import { PythonFunction } from '@aws-cdk/aws-lambda-python-alpha';
 
 export class GenAILambdaStack extends Stack {
@@ -15,18 +16,42 @@ export class GenAILambdaStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const pandasLayer = lambda.LayerVersion.fromLayerVersionArn(
+    
+    const pythonRuntime = lambda.Runtime.PYTHON_3_11;
+    const architecture = lambda.Architecture.X86_64;
+    
+    const ecrBaseImage = pythonRuntime.bundlingImage.image + `:latest-${architecture.toString()}`
+    
+    const bundlingOption: cdk.BundlingOptions = {
+      image: new cdk.DockerImage(ecrBaseImage),
+      command:[
+        "bash",
+        "-c",
+        "pip install -r requirements.txt -t /asset-output/python",
+      ],
+      outputType:cdk.BundlingOutput.AUTO_DISCOVER,
+      platform:architecture.dockerPlatform,
+      network:"host"
+    }
+    
+    const bedrockLayerAsset = new assets.Asset(
       this,
-      "PandasLayer",
-      `arn:aws:lambda:${this.region}:336392948345:layer:AWSSDKPandas-Python311:1`
-    );
-
+      "BedrockCompatibleBoto3Asset",
+      {
+        path: "./layers/boto3BedrockCompatible",
+        bundling: bundlingOption
+      }
+    )
+    
     const bedrockCompatibleBoto3 = new lambda.LayerVersion(
       this,
       "BedrockCompatibleBoto3Layer",
       {
-        compatibleRuntimes:[lambda.Runtime.PYTHON_3_9],
-        code: lambda.Code.fromAsset("../genai-assets/bedrock-compatible-sdk.zip"),
+        compatibleRuntimes:[pythonRuntime],
+        compatibleArchitectures: [architecture],
+        code: lambda.Code.fromBucket(bedrockLayerAsset.bucket, bedrockLayerAsset.s3ObjectKey),
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        description: "Boto3 version that is Amazon Bedrock compatible."
       }
     )
 
@@ -49,26 +74,26 @@ export class GenAILambdaStack extends Stack {
     );
     s3BucketSSMParam.node.addDependency(this.s3Bucket);
 
-    const parameterStoreSageMakerARNs = `arn:aws:ssm:${this.region}:${this.account}:parameter/app/sagemaker/endpoint/*`;
-    const parameterSageMakerEndpoints = `arn:aws:ssm:${this.region}:${this.account}:parameter/app/sagemaker/endpoint/*`;
 
-    const invokeExternalSagemakerEndpointLambdaFunction = new PythonFunction(
+    const modelId = "stability.stable-diffusion-xl-v0";
+    const bedrockStableDiffusionArn =  `arn:aws:bedrock:${this.region}::foundation-model/${modelId}`;
+    
+    const invokeBedrockFoundationModelLambdaFunction = new PythonFunction(
       this,
-      "InvokeExternalSagemakerEndpoint",
+      "InvokeBedrockFoundationModel",
       {
-        runtime: lambda.Runtime.PYTHON_3_11,
-        entry: "lambda/InvokeSagemakerLambdaAssets",
-        index: "InvokeExternalSagemakerEndpoint.py",
+        runtime: pythonRuntime,
+        architecture: architecture,
+        entry: "lambda/InvokeBedrockLambdaAssets",
+        index: "InvokeBedrockModel.py",
         handler: "lambda_handler",
-        layers: [
-          pandasLayer,
-          bedrockCompatibleBoto3
-        ],
+        layers: [bedrockCompatibleBoto3],
         timeout: cdk.Duration.seconds(300),
         environment: {
           BUCKET_NAME: this.s3Bucket.bucketName,
+          BEDROCK_MODEL_ID: modelId
         },
-        role: new iam.Role(this, "InvokeExternalSagemakerEndpointRole", {
+        role: new iam.Role(this, "InvokeBedrockFoundationModelRole", {
           assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
           managedPolicies: [
             iam.ManagedPolicy.fromAwsManagedPolicyName(
@@ -85,12 +110,12 @@ export class GenAILambdaStack extends Stack {
                 }),
               ],
             }),
-            ssmAccessPolicy: new iam.PolicyDocument({
+            bedrockAccessPolicy: new iam.PolicyDocument({
               statements: [
                 new iam.PolicyStatement({
                   effect: iam.Effect.ALLOW,
-                  actions: ["ssm:DescribeParameters", "ssm:GetParameter"],
-                  resources: [parameterStoreSageMakerARNs, parameterSageMakerEndpoints],
+                  actions: ["bedrock:InvokeModel"],
+                  resources: [bedrockStableDiffusionArn],
                 }),
               ],
             }),
@@ -101,16 +126,16 @@ export class GenAILambdaStack extends Stack {
 
 
     // Add the Lambda function's ARN to AWS SSM Parameter Store
-    const sagemakerLambdaARNParameter = new ssm.StringParameter(
+    const bedrockLambdaARNParameter = new ssm.StringParameter(
       this,
-      "InvokeExternalSagemakerEndpointLambdaFunctionArnParameter",
+      "InvokeBedrockFoundationModelLambdaFunctionArnParameter",
       {
-        parameterName: "/app/nft/SagemakerEndpointLambdaFunctionArn",
-        stringValue: invokeExternalSagemakerEndpointLambdaFunction.functionArn,
+        parameterName: "/app/nft/ImageGenerationLambdaFunctionArn",
+        stringValue: invokeBedrockFoundationModelLambdaFunction.functionArn,
       }
     );
 
     // Grant the Lambda function full permissions to the S3 bucket
-    this.s3Bucket.grantReadWrite(invokeExternalSagemakerEndpointLambdaFunction);
+    this.s3Bucket.grantReadWrite(invokeBedrockFoundationModelLambdaFunction);
   }
 }

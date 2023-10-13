@@ -2,13 +2,11 @@
 # SPDX-License-Identifier: MIT-0
 import boto3
 import json
-import numpy as np
 from io import BytesIO
 import base64
 import uuid
 import random
 import yaml
-import requests
 import os
 import traceback
 import jwt
@@ -30,6 +28,7 @@ with open('config.yml') as f:
     model_endpoint_name_key = config['model_endpoint_name_key'][0]
 
 bucket_name = os.environ.get('BUCKET_NAME')
+bedrock_model_id = os.environ.get('BEDROCK_MODEL_ID')
 
 
 def lambda_handler(event, context):
@@ -85,7 +84,7 @@ def query(input_payload):
         accept='application/json',
         body=json.dumps(input_payload),
         contentType='application/json',
-        modelId='stability.stable-diffusion-xl-v0'
+        modelId=bedrock_model_id
     )
 
    # query_response = response.content.decode('utf-8')
@@ -123,7 +122,7 @@ def upload_image_to_s3(img, prompt):
     """
     s3 = boto3.resource('s3')
     img_byte_arr = BytesIO()
-    img = Image.fromarray(np.uint8(img))
+   # img = Image.fromarray(np.uint8(img))
     img.save(img_byte_arr, format='JPEG')
     ## modified because we want to use UUID to generate image name
     object_key = f"pre-conf/{str(uuid.uuid4())}.jpg"
@@ -193,23 +192,3 @@ def create_input_payload(event):
         "steps":50
     }
     return input_payload, input_prompt
-
-
-import boto3
-import json
-client = boto3.client('bedrock-runtime')
-input_prompt = "car flying in space"
-input_payload = {
-    "text_prompts":[
-        {"text":input_prompt}
-        ],
-        "cfg_scale":7.5,
-        #"seed":0,
-        "steps":50
-        }
-response = client.invoke_model(
-    accept='application/json',
-    body=json.dumps(input_payload),
-    contentType='application/json',
-    modelId='stability.stable-diffusion-xl-v0'
-)
