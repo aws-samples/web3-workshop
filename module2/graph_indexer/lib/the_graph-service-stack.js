@@ -40,10 +40,20 @@ class TheGraphServiceStack extends Stack {
       this,
       '/app/log_level'
     )
-    const allowedSG = StringParameter.valueForStringParameter(
-      this,
-      '/app/cloud9_sg'
-    )
+    const tryGetAllowedSG = () => {
+      try {
+        const parameterName = '/app/cloud9_sg'
+        // we are using valueFromLookup instead of valueForStringParameter because
+        // valueForStringParameter doesn't retrieve the value until deployment. We
+        // need it at synth time already, because depending on it we are creating conditional resources.
+        const cloud9_sg = StringParameter.valueFromLookup(this, parameterName)
+        return cloud9_sg.startsWith('dummy-value-for') || cloud9_sg === 'none' ? undefined : cloud9_sg
+      } catch (e) {
+        return undefined
+      }
+    }
+    const allowedSG = tryGetAllowedSG()
+
     const clientUrl = StringParameter.valueForStringParameter(
       this,
       '/web3/rpc_endpoint'

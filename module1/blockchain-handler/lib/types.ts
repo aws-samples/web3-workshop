@@ -41,7 +41,6 @@ export type Nft = {
   description: string;
   mintTransactionHash?: string;
   timeMinted?: number;
-  attributes?: TokenAttribute[];
 };
 
 export type GraphResponse = {
@@ -59,19 +58,12 @@ export type GraphToken = {
   contract: { id: string };
   updatedAtTimestamp: string;
   owner: { id: string };
-  tokenUri: string;
-  metadata: {
+  ipfsUri: {
     name: string;
     image: string;
     description: string;
-    attributes: TokenAttribute[];
   };
   previousOwners: { id: string }[];
-};
-
-export type TokenAttribute = {
-  key: string;
-  value: string;
 };
 
 export type LambdaResponse = {
