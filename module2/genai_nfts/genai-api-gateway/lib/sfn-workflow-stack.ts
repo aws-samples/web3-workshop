@@ -10,7 +10,7 @@ import * as logs from "aws-cdk-lib/aws-logs";
 
 export interface SFNWorkflowConstructProps {
   WorkflowName: string;
-  SagemakerImageGenLambdaArn: string;
+  ImageGenLambdaArn: string;
   IPFSPublishLambdaArn: string;
   MintNFTLambdaArn: string;
 }
@@ -21,17 +21,17 @@ export class SFNWorkflowConstruct extends Construct {
   constructor(scope: Construct, id: string, props: SFNWorkflowConstructProps) {
     super(scope, id);
 
-    // First Lambda SagemakerImageGenLambda
-    const SagemakerImageGenLambdaFunction = lambda.Function.fromFunctionArn(
+    // First Lambda ImageGenLambda
+    const ImageGenLambdaFunction = lambda.Function.fromFunctionArn(
       this,
-      "SagemakerImageGenLambda",
-      props.SagemakerImageGenLambdaArn
+      "ImageGenLambda",
+      props.ImageGenLambdaArn
     );
-    const SagemakerImageGenLambdaTask = new LambdaInvoke(
+    const ImageGenLambdaTask = new LambdaInvoke(
       this,
-      "SagemakerImageGenLambdaTask",
+      "ImageGenLambdaTask",
       {
-        lambdaFunction: SagemakerImageGenLambdaFunction,
+        lambdaFunction: ImageGenLambdaFunction,
         payload: sfn.TaskInput.fromObject({
           prompt: sfn.JsonPath.stringAt("$.prompt"),
           jwt: sfn.JsonPath.stringAt("$.jwt"),
@@ -101,7 +101,7 @@ export class SFNWorkflowConstruct extends Construct {
         "TxnHash.$": "$.Payload.body",
       },
     });
-    const definition = sfn.Chain.start(SagemakerImageGenLambdaTask)
+    const definition = sfn.Chain.start(ImageGenLambdaTask)
       .next(IPFSPublishLambdaTask)
       .next(MintNFTLambdaTask);
 
