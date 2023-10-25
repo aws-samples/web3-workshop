@@ -19,7 +19,7 @@ export class CiStack extends cdk.Stack {
     const solidityS3Bucket = new s3.Bucket(this, 'SolidityS3Bucket', {
       removalPolicy: RemovalPolicy.DESTROY,
       enforceSSL: true,
-      encryption: s3.BucketEncryption.KMS,
+      encryption: s3.BucketEncryption.S3_MANAGED,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
     });
 

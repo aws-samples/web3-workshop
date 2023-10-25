@@ -19,4 +19,5 @@ NagSuppressions.addStackSuppressions(pipelineStack, [
     { id: 'AwsSolutions-IAM5', reason: 'Permission to read CF stack is restrictive enough' },
     { id: 'AwsSolutions-S1', reason: 'Access logs not required on the bucket' },
     { id: 'AwsSolutions-KMS5', reason: 'KMS key rotation not required' },
+    { id: 'AwsSolutions-CB4', reason: 'Uses S3 key for encryption' },
 ], true);
