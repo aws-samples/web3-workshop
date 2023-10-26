@@ -40,7 +40,8 @@ cd ..
 while true; do
     build_status=$( aws amplify list-jobs --branch-name main --region ${CDK_DEPLOY_REGION} --app-id ${app_id} | jq -r '.jobSummaries[0].status' )
     if [[ ${build_status} == 'SUCCEED' ]]; then
-        echo "build succeed: https://main.${app_id}.amplifyapp.com"
+        echo "UI build succeeded"
+        echo "UI is available at: https://main.${app_id}.amplifyapp.com"
         break
     fi
     sleep 5
