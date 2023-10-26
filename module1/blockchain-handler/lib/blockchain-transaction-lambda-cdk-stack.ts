@@ -71,13 +71,6 @@ export class BlockchainTransactionLambdaCdkStack extends cdk.Stack {
       })
     );
 
-    lambdaRole.addToPolicy(
-      new PolicyStatement({
-        actions: ['kms:Decrypt'],
-        resources: ['*']
-      })
-    );
-
     // Give this Lambda permission to read SSM params at runtime
 
     const parameterStoreWeb3ARN = `arn:aws:ssm:${this.region}:${this.account}:parameter/web3/*`;
