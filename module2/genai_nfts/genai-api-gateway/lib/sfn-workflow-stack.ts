@@ -18,7 +18,7 @@ export interface SFNWorkflowConstructProps {
 // Define retry configuration for SagemakerImageGenLambdaTask
 const retryConfigurationForSagemakerImageGen = {
   errors: ["States.ALL"],
-  interval: cdk.Duration.seconds(12),
+  interval: cdk.Duration.seconds(10),
   maxAttempts: 4,
   backoffRate: 2,
 };
