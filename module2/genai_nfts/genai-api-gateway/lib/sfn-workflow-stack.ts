@@ -15,6 +15,13 @@ export interface SFNWorkflowConstructProps {
   MintNFTLambdaArn: string;
 }
 
+// Define retry configuration for SagemakerImageGenLambdaTask
+const retryConfigurationForSagemakerImageGen = {
+  errors: ["States.ALL"],
+  interval: cdk.Duration.seconds(12),
+  maxAttempts: 4,
+  backoffRate: 2,
+};
 export class SFNWorkflowConstruct extends Construct {
   public readonly stateMachine: StateMachine;
 
@@ -48,6 +55,7 @@ export class SFNWorkflowConstruct extends Construct {
       }
     );
 
+    SagemakerImageGenLambdaTask.addRetry(retryConfigurationForSagemakerImageGen)
     // Second Lambda IPFSPublishLambda
     const IPFSPublishLambdaFunction = lambda.Function.fromFunctionArn(
       this,
@@ -104,6 +112,7 @@ export class SFNWorkflowConstruct extends Construct {
     const definition = sfn.Chain.start(SagemakerImageGenLambdaTask)
       .next(IPFSPublishLambdaTask)
       .next(MintNFTLambdaTask);
+
 
     // Step Function Workflow
     const logGroup = new logs.LogGroup(this, "ImageGenWorkflowXLogGroup", {
