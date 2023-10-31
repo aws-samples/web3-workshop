@@ -56,12 +56,7 @@ def lambda_handler(event, context):
     except Exception as e:
         print(f"Error: {e}")
         traceback.print_exc()  # Print the detailed exception log
-        response = {
-            "statusCode": 500,
-            "body": json.dumps({
-                "message": "Internal Server Error"
-            })
-        }
+        raise Exception(f"Error processing event: {e}")
     response['body'] = json.loads(response['body'])
     return response
 
@@ -91,13 +86,15 @@ def query(input_payload):
     payload_json = json.dumps(payload)
     API_URL = get_ssm_parameter("/app/sagemaker/endpoint/apiurl")
     response = requests.post(API_URL, data=payload_json, headers=headers)
-    query_response = response.content.decode('utf-8')
-    
+
     if response.status_code != 200:
         print(f"status code: {response.status_code}")
-        print(f"response: {query_response}")
-        print(f"api key: {API_KEY}")
+        print(f"response: {response}")
         print(f"api url: {API_URL}")
+        # This exception will be propagated up to the Lambda handler, which will handle it as an internal server error
+        raise Exception(f"Non-200 status code from SM-APIg: {response.status_code}, Response: {response.text}, API URL: {API_URL}")
+    
+    query_response = response.content.decode('utf-8')
     
     return query_response
 
