@@ -1,7 +1,7 @@
 
-# Welcome to Stable Diffusion CDK Python project!
+# Deploy Stable Diffusion Sagemaker endpoint
 
-This project deploys a Stable diffusion model endpoint using AWS Sagemaker. It also adds a lambda and an API Gateway serve the endpoint.
+This module deploys a Stable diffusion model endpoint using AWS Sagemaker. It also adds a lambda and an API Gateway to serve the endpoint.
 
 ## Usage: 
 Sample HTTP request to the API Gateway:
@@ -13,7 +13,7 @@ Cache-Control: no-cache
 {
   "query": {
     "prompt": "surprize me",
-    "negative_prompt": "(deformed iris, deformed pupils), (text), out of frame, low quality, jpeg artifacts, (bad art:1.1), plain, dull, (blurry:1.4), disfigured, bad art, deformed, poorly drawn, strange colors, blurry, boring, sketch, lacklustre, religious figure, religion, race, nudity, cropped",
+    "negative_prompt": "out of frame, low quality, jpeg artifacts, (bad art:1.1), plain, dull, (blurry:1.4), disfigured, bad art, deformed, poorly drawn, strange colors, blurry, boring, sketch, lacklustre, religious figure, religion, race, nudity, cropped",
     "width": 512,
     "height": 512,
     "num_images_per_prompt": 1,
@@ -26,47 +26,37 @@ Cache-Control: no-cache
 
 ## Deployment Steps
 
-To manually create a virtualenv on MacOS and Linux:
+1. Manually create a virtualenv:
 
 ```
 python3 -m venv .venv
 ```
 
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
+2. Activate your virtualenv:
 
 ```
 source .venv/bin/activate
 ```
 
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
-```
-
-Once the virtualenv is activated, you can install the required dependencies.
+3. Once the virtualenv is activated, you can install the required dependencies:
 
 ```
 pip install -r requirements.txt
 ```
 
-At this point you can now synthesize the CloudFormation template for this code.
+4. Synthesize the CloudFormation template for this module:
 
 ```
 cdk synth
 ```
 
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
+5. Deploy the code:
 
-You can now deploy the code.
 ```
 cdk deploy
 ```
 
-The default instance count for inference is set to 1. The instance count can be changed by passing the instance_count_param 
+The default instance count for inference is set to 1. The instance count can be changed by passing the instance_count_param: 
 ```
 cdk deploy --context instance_count_param=2
 ```
