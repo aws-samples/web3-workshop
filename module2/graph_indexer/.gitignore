@@ -10,8 +10,6 @@ cdk.out
 subgraph/bayc/node_modules
 subgraph/bayc/generated
 subgraph/bayc/build
-subgraph/genai/subgraph.yaml
 
 cdk.context.json
-cdk.json
 
