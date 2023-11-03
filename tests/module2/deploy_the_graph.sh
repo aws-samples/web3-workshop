@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
-set -x
+set +x
 set -e
 
 cd module2/graph_indexer

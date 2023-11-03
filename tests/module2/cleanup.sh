@@ -22,7 +22,6 @@ fi
 
 cd ..
 
-
 cd genai_nfts/genai-api-gateway
 genai_s3_bucket_arn=$(aws ssm get-parameter --name /app/assets/s3_bucket_genai --region ${CDK_DEPLOY_REGION} | jq -r ".Parameter.Value") || true
 genai_s3_bucket_name=$(echo ${genai_s3_bucket_arn} | cut -d: -f6) || true
