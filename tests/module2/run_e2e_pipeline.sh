@@ -32,11 +32,11 @@ if [[ ${install_yq} = true ]]; then
   yq --version
 fi
 
-if [[ ${deploy_sagemaker} ]]; then
+if [[ ${deploy_sagemaker} = true ]]; then
    ./tests/module2/deploy_sagemaker.sh
 fi
 
-if [[ ${deploy_genai_pipeline} ]]; then
+if [[ ${deploy_genai_pipeline} = true ]]; then
   ./tests/module2/deploy_genai_pipeline.sh
 fi
 
@@ -44,18 +44,18 @@ fi
 ensure_jwt
 jq -R 'split(".") | .[1] | @base64d | fromjson' <<< "${jwt}"
 
-if [[ ${deploy_genai_smart_contract} ]]; then
+if [[ ${deploy_genai_smart_contract} = true ]]; then
     ./tests/module2/deploy_smart_contract.sh ${jwt}
 fi
 
-if [[ ${test_api_e2e_newman} ]]; then
+if [[ ${test_api_e2e_newman} = true ]]; then
     ./tests/module2/run_integration_tests.sh ${jwt} || true
 fi
 
-if [[ ${deploy_the_graph} ]]; then
+if [[ ${deploy_the_graph} = true ]]; then
   ./tests/module2/deploy_the_graph.sh
 fi
 
-if [[ ${redeploy_frontend]} ]]; then
+if [[ ${redeploy_frontend} = true ]]; then
   ./tests/module2/redeploy_frontend.sh
 fi
