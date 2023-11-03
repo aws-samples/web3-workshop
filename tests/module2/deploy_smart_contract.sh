@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
-set -x
+set +x
 set -e
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -10,8 +10,6 @@ deploy_gen_ai_smart_contract=true
 update_gen_ai_smart_contract_address=true
 
 jwt=${1}
-# echo $PWD
-# echo $SCRIPT_DIR
 
 if [[ ${deploy_gen_ai_smart_contract} = true ]]; then
     start=`date +%s`
