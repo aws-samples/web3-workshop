@@ -22,6 +22,8 @@ function ensure_jwt() {
     fi
 }
 
+install_aws_cli_v2=false
+install_jq_v1_6=false
 install_cdk=false
 install_newman=false
 deploy_parameter_stack=true
@@ -31,7 +33,22 @@ test_api_gateway_curl=true
 test_api_e2e_newman=false
 deploy_frontend=true
 
+
 # test dependencies
+if [[ ${install_aws_cli_v2} = true ]]; then
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install --bin-dir /usr/bin --install-dir /usr/local/aws-cli --update
+  aws --version
+fi
+
+if [[ ${install_jq_v1_6} = true ]]; then
+  curl -L "https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64" -o "jq-linux64"
+  chmod +x jq-linux64
+  sudo mv jq-linux64 /usr/bin/jq
+  jq --version
+fi
+
 if [[ ${install_cdk} = true ]]; then
   npm install cdk@2.89.0
 fi
