@@ -2,7 +2,6 @@
 	"info": {
 		"_postman_id": "6feca835-5894-4d8e-95a0-ab9f10188ac3",
 		"name": "web3_workshop_module2",
-		"description": "# ⛓️ Get started here\n\nPostman allows you to test your APIs using simple [Javascript code](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/). You can evaluate your response body, headers, cookies, and more using the [ChaiJS BDD](https://www.chaijs.com/api/bdd/) syntax.\n\nThis template guides you through the process of setting up an integration test to ensure that all individual components of an API function together seamlessly.\n\nThe API under test in this collection includes three endpoints for registering and receiving a token, accessing your unique generated name, and unregistering a token:\n\n- POST `/register`\n- POST `/unregister`\n- GET `/my-name`\n    \n\nBy setting up requests in the order of the operation, we can test the flow of data to and from the endpoints and ensure they work together as expected. We also verify that the data persists between requests on the back end.\n\n## 🔖 **How to use this template**\n\n**Step 1:** Check out the requests' documentation to learn more about -\n\n- what each request is meant to do.\n- the tests we've added against each one.\n    \n\n**Step 2:** Run this collection by clicking on \"Run\" or the by using the [Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/).\n\n<img src=\"https://content.pstmn.io/84019b0f-69c8-4c5f-98b9-2c90a6f9a0b1/Y29sbGVjdGlvbi1ydW5uZXItYnV0dG9uLmpwZWc=\" width=\"266\" height=\"103\">\n\n**Step 3:** To customize this template, replace the request URLs with your API endpoints and add or edit the tests if needed.\n\n## 💡Related templates\n\n[Regression testing](https://go.pstmn.io/regression-testing)  \n[Performance testing](https://go.pstmn.io/performance-testing)  \n[Contract testing](https://go.pstmn.io/contract-testing-template)  \n[Conditional workflow](https://go.pstmn.io/conditional-workflow)  \n[Mock data generation](https://go.pstmn.io/mock-data-generation)  \n[Common API vulnerabilities check](https://go.pstmn.io/common-API-vulnerabilities-check)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30633627"
 	},
@@ -542,7 +541,8 @@
 		},
 		{
 			"key": "baseUrl",
-			"value": "https://postman-integration-testing.glitch.me/"
+			"value": "",
+			"type": "string"
 		}
 	]
 }
