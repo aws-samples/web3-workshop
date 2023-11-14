@@ -47,6 +47,17 @@ graph codegen
 graph create --node http://${GRAPH_IP}:8020/ genai
 graph deploy --node http://${GRAPH_IP}:8020/ --ipfs http://${GRAPH_IP}:5001 --version-label v1 genai
 
+# Update parameter store with the graph endpoint
+# Retrieve lambda name and query endpoint, ...
+LAMBDA_NAME=`aws lambda list-functions | jq -r '.Functions[] | select(.FunctionName | contains("Web3WorkshopBlockchainTra-BlockchainTransactionMan")) | .FunctionName'`
+QUERY_ENDPOINT=`aws ssm get-parameter --name '/web3/indexer/queryEndpoint' --query 'Parameter.Value' --output text`
+
+# ...generate new config, and ...
+NEW_CONFIG=`aws lambda get-function-configuration --function-name ${LAMBDA_NAME} | jq --arg newval ${QUERY_ENDPOINT} -c '.Environment.Variables.INDEXER_ENDPOINT |= $newval | .Environment'`
+
+# ...update lambda config with new values
+aws lambda update-function-configuration --function-name ${LAMBDA_NAME} --environment ${NEW_CONFIG} | jq '.Environment.Variables'
+
 cd ../..
 
 
