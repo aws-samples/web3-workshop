@@ -91,41 +91,16 @@ steps below:
 To sign up and sign in with a user execute the following script and provide a valid email address for validation purpose.
 Ensure that your `aws cli` credentials are valid and have not been expired otherwise the script will fail.
 ```shell
-./tests/e2e_authentication.sh john.doe@example.com
+./scripts/create_identity.sh john.doe@example.com
 ```
 
-The script will run a sign-up and ask for the email confirmation code. Please be aware that it can take several minutes till
+The script will run a sign-up task. Please be aware that it can take several minutes till
 the confirmation code arrives via email.
-```
-./tests/e2e_authentication.sh john.doe@example.com
-email: ***REMOVED***
-password: sPU62r5KiW0zGZU3YZulsQ==
-{
-    "UserConfirmed": false,
-    "CodeDeliveryDetails": {
-        "Destination": "j***@e***",
-        "DeliveryMedium": "EMAIL",
-        "AttributeName": "email"
-    },
-    "UserSub": "d68c6123-f123-4123-a123-b0fb8ac6cfff"
-}
-Email confirmation code:
-```
 
-Paste the confirmation code and press enter.
-The script will now confirm your email address and run a sign-in. If successful, the returned `id_token (JWT)` will be
-parsed by `[jwt-cli](https://github.com/mike-engel/jwt-cli)` if installed.
+Use the confirmation code along with your email address to get a valid jwt token.
 
 ```shell
-Token header
-------------
-{
-  "alg": "RS256",
-  "kid": "a4/+sHOVlrZW2ek39QapxmycgQ1Q6XaEBpCTSj53Uzg="
-}
-
-Token claims
-------------
+./scripts/get_jwt.sh john.doe@example.com <my_email_confirmation_code>
 {
   "account_address": "0x4159186832d06a97732c6c25bA8bF58F46E457f4",
   "aud": "2oh22e7oevj7sfm0ubbd7sm22b",
