@@ -38,7 +38,7 @@ def lambda_handler(event, context):
         s3_urls, input_payload = process_text(event)
         prompt = event['prompt']
         jwtBase64 = event['jwt'][7:]  # Remove 'Bearer ' at the start
-        jwtToken = jwt.decode(jwtBase64, algorithms=["RS256"], options={"verify_signature": False})
+        jwtToken = jwt.decode(jwtBase64, algorithms=["RS256"], options={"verify_signature": True})
         print(f"jwt: {jwtToken}")
         response = {
             "statusCode": 200,
