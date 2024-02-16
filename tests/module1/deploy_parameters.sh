@@ -13,9 +13,9 @@ parameter_stack_name_lc=$(echo "${parameter_stack_name}" | awk '{print tolower($
 # parameters
 cd module1/parameters
 
-# check if the stack already exits
-if ! aws cloudformation describe-stacks --stack-name ${parameter_stack_name} &> /dev/null && \
- ! aws cloudformation describe-stacks --stack-name ${parameter_stack_name_lc} &> /dev/null; then
+# check if the stack (upper case or lower case) already exits
+if ! aws cloudformation describe-stacks --stack-name ${parameter_stack_name} --region ${CDK_DEPLOY_REGION} &> /dev/null && \
+ ! aws cloudformation describe-stacks --stack-name ${parameter_stack_name_lc} --region ${CDK_DEPLOY_REGION} &> /dev/null; then
     start=`date +%s`
     npm install #&& npm audit fix --force
     cdk synth && cdk deploy Web3WorkshopParametersStack \
