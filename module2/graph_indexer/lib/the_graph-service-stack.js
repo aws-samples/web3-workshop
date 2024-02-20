@@ -3,21 +3,14 @@
 const { Stack, Duration, CfnOutput, Tags } = require('aws-cdk-lib')
 const { NagSuppressions } = require('cdk-nag')
 
-const {
-  HttpApi,
-  VpcLink,
-  HttpMethod,
-  ParameterMapping,
-  MappingValue,
-} = require('@aws-cdk/aws-apigatewayv2-alpha')
+const { HttpApi, VpcLink, HttpMethod } = require('aws-cdk-lib/aws-apigatewayv2')
 const { TheGraphCluster } = require('./theGraphCluster-construct')
 const { Vpc, SubnetType } = require('aws-cdk-lib/aws-ec2')
 const {
   HttpAlbIntegration,
-} = require('@aws-cdk/aws-apigatewayv2-integrations-alpha')
+} = require('aws-cdk-lib/aws-apigatewayv2-integrations')
 const { StringParameter } = require('aws-cdk-lib/aws-ssm')
 const { LogGroup } = require('aws-cdk-lib/aws-logs')
-const { ServicePrincipal } = require('aws-cdk-lib/aws-iam')
 const {
   AwsCustomResource,
   PhysicalResourceId,
@@ -47,7 +40,9 @@ class TheGraphServiceStack extends Stack {
         // valueForStringParameter doesn't retrieve the value until deployment. We
         // need it at synth time already, because depending on it we are creating conditional resources.
         const cloud9_sg = StringParameter.valueFromLookup(this, parameterName)
-        return cloud9_sg.startsWith('dummy-value-for') || cloud9_sg === 'none' ? undefined : cloud9_sg
+        return cloud9_sg.startsWith('dummy-value-for') || cloud9_sg === 'none'
+          ? undefined
+          : cloud9_sg
       } catch (e) {
         return undefined
       }
