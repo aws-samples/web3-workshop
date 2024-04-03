@@ -95,9 +95,9 @@ Ensure that your `aws cli` credentials are valid and have not been expired other
 ```
 
 The script will run a sign-up task. Please be aware that it can take several minutes till
-the confirmation code arrives via email.
+the confirmation code arrives via email. The prompt will wait until you type the confirmation code.
 
-Use the confirmation code along with your email address to get a valid jwt token.
+Use the password along with your email address to get a valid jwt token.
 
 ```shell
 ./scripts/get_jwt.sh john.doe@example.com <my_email_confirmation_code>
