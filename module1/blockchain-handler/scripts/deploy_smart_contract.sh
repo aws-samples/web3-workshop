@@ -36,4 +36,4 @@ else
     echo ${smart_contract_deployment_result} | tee .user_op_hash
 fi
 
-rm -rf .tmp.out .tmp.payload
+#rm -rf .tmp.out .tmp.payload

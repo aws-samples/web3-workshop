@@ -4,10 +4,17 @@
 set +x
 set -e
 
-RPC_ENDPOINT=""
-ALCHEMY_POLICY_ID=""
-ALCHEMY_API_KEY=""
-NFT_STORAGE_API_TOKEN=""
+RPC_ENDPOINT="https://rpc.sepolia.org"
+ALCHEMY_POLICY_ID="171323a0-dd77-4d75-b848-18f5cd99419f"
+ALCHEMY_API_KEY="tPlhuS4IDHbHHU7RBsZTUN9tciY4ojor"
+NFT_STORAGE_API_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDkzQjdGYTU1ZjZCQzg1QTA4N2Y1QWI3NGZFYkFERDMyNzk2MDc5QjgiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5ODE4MzE0ODUyNSwibmFtZSI6IkJ1aWxkV2ViM1dvcmtzaG9wIn0.L0cNzak5hsH7BIOfmLKMzIg11C3j988EKDru3U-ke4Q"
+PAYMASTER_ENDPOINT="https://eth-sepolia.g.alchemy.com/v2/tPlhuS4IDHbHHU7RBsZTUN9tciY4ojor"
+
+export RPC_ENDPOINT=$RPC_ENDPOINT
+export ALCHEMY_API_KEY=$ALCHEMY_API_KEY
+export ALCHEMY_POLICY_ID=$ALCHEMY_POLICY_ID
+export NFT_STORAGE_API_TOKEN=$NFT_STORAGE_API_TOKEN
+export PAYMASTER_ENDPOINT=$PAYMASTER_ENDPOINT
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
@@ -18,7 +25,7 @@ function ensure_jwt() {
         jwt=$(<.jwt)
     else
         # writing it to main folder
-        jwt=$(./module1/wallets/scripts/create_test_identity.sh)
+        jwt=$($CRIPT_DIR../../module1/wallets/scripts/create_test_identity.sh)
     fi
 }
 
@@ -59,11 +66,11 @@ fi
 
 if [[ ${deploy_parameter_stack} = true ]]; then
   # parameter stack will check for an already existing stack and skip deployment
-  ./tests/module1/deploy_parameters.sh ${RPC_ENDPOINT} ${ALCHEMY_POLICY_ID} ${ALCHEMY_API_KEY} ${NFT_STORAGE_API_TOKEN}
+  $SCRIPT_DIR/deploy_parameters.sh ${RPC_ENDPOINT} ${ALCHEMY_POLICY_ID} ${ALCHEMY_API_KEY} ${NFT_STORAGE_API_TOKEN} ${PAYMASTER_ENDPOINT}
 fi
 
 if [[ ${deploy_api} = true ]]; then
-  ./tests/module1/deploy_api.sh
+  $SCRIPT_DIR/deploy_api.sh
 fi
 
 # test user creation
@@ -72,17 +79,17 @@ jq -R 'split(".") | .[1] | @base64d | fromjson' <<< "${jwt}"
 
 
 if [[ ${deploy_smart_contract} = true ]]; then
-  ./tests/module1/deploy_smart_contract.sh ${jwt}
+  $SCRIPT_DIR/deploy_smart_contract.sh ${jwt}
 fi
 
 if [[ ${test_api_gateway_curl} = true ]]; then
-  ./tests/module1/test_api_gateway.sh ${jwt}
+  $SCRIPT_DIR/test_api_gateway.sh ${jwt}
 fi
 
 if [[ ${test_api_e2e_newman} = true ]]; then
-  ./tests/module1/run_integration_tests.sh ${jwt} || true
+  $SCRIPT_DIR/run_integration_tests.sh ${jwt} || true
 fi
 
 if [[ ${deploy_frontend} = true ]]; then
-  ./tests/module1/deploy_frontend.sh
+  $SCRIPT_DIR/deploy_frontend.sh
 fi

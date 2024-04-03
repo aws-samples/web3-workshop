@@ -48,13 +48,13 @@ export function getChainID() {
   return getEnvironmentVariable('CHAIN_ID');
 }
 
+// do we really need this now we are getting chainId using eth_chainId? 
 export function getChainName() {
   const chainId = getEnvironmentVariable('CHAIN_ID');
 
-  if (chainId == '5') {
-    return 'goerli';
+  if (chainId == '11155111') {
+    return 'sepolia';
   }
-  return 'mumbai';
 }
 
 export function getEntryPointAddress(): Address {
@@ -66,17 +66,17 @@ export function getWalletFactoryAddress(): Address {
 }
 
 export function getMumbaiAPIKey() {
-  return getEnvironmentVariable('AA_API_KEY_MUMBAI');
-}
-
-export function getGoerliAPIKey() {
-  return getEnvironmentVariable('AA_API_KEY_GOERLI');
+  return getEnvironmentVariable('AA_API_KEY_MUMBAI'); // not defined on the parameter stack
 }
 
 export function getMumbaiAlchemyPolicyID() {
-  return getEnvironmentVariable('AA_POLICY_ID_MUMBAI');
+  return getEnvironmentVariable('AA_POLICY_ID_MUMBAI'); // not defined on the parameter stack
+
+}
+export function getTestnetAPIKey() {
+  return getEnvironmentVariable('AA_API_KEY_TESTNET');
 }
 
-export function getGoerliAlchemyPolicyID() {
-  return getEnvironmentVariable('AA_POLICY_ID_GOERLI');
+export function getTestnetAlchemyPolicyID() {
+  return getEnvironmentVariable('AA_POLICY_ID_TESTNET');
 }

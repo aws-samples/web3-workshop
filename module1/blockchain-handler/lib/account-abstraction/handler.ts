@@ -6,7 +6,7 @@ import {
   type SimpleSmartAccountOwner,
   UserOperationReceipt
 } from '@alchemy/aa-core';
-import { polygonMumbai, goerli } from 'viem/chains';
+import { sepolia } from 'viem/chains';
 import { Lambda } from 'aws-sdk';
 import { ethers } from 'ethers';
 import { AlchemyProvider } from '@alchemy/aa-alchemy';
@@ -16,11 +16,11 @@ import {
   getChainName,
   getChainID,
   getMumbaiAPIKey,
-  getGoerliAPIKey,
+  getTestnetAPIKey,
   getEntryPointAddress,
   getWalletFactoryAddress,
   getMumbaiAlchemyPolicyID,
-  getGoerliAlchemyPolicyID
+  getTestnetAlchemyPolicyID
 } from '../utils/parameters';
 import logger from '../utils/logger';
 
@@ -93,7 +93,7 @@ class SimpleKMSAccountOwner implements SimpleSmartAccountOwner {
 export async function getUserOperationReceipt(hash: Address): Promise<UserOperationReceipt> {
   logger.debug(`starting get user op receipt for hash ${hash}`);
 
-  const APIKEY = getGoerliAPIKey();
+  const APIKEY = getTestnetAPIKey();
   const entryPointAddress = getEntryPointAddress();
   const chainId = Number(getChainID());
   const provider = new AlchemyProvider({
@@ -121,9 +121,7 @@ export async function sendUserOperation(
   userKeyID: string,
   sub: string
 ): Promise<string> {
-  const chainName = getChainName();
-
-  const isMumbai = chainName == 'mumbai' ? true : false;
+  const chainName = getChainName(); //TODO: fix this so we can get the right chain based on chainID and support multiple chains
 
   logger.debug(
     `starting send user op for userkeyid ${userKeyID} and sub ${sub} and owneraddress ${signingAddress}`
@@ -133,20 +131,17 @@ export async function sendUserOperation(
   let APIKEY;
   let policyId;
 
-  const chain = isMumbai ? polygonMumbai : goerli;
+  const chain = sepolia; //TODO: fix this so we can support multiple chains. Should be part of the getChainName() function.
 
-  if (isMumbai) {
-    APIKEY = getMumbaiAPIKey();
-    policyId = getMumbaiAlchemyPolicyID();
-  } else {
-    APIKEY = getGoerliAPIKey();
-    policyId = getGoerliAlchemyPolicyID();
-  }
+  // do we nned this since we are getting the chainId using eth_chainId and instructing the user to create the proper API KEY on the Configuration Layer?
+  APIKEY = getTestnetAPIKey(); //this is already defined above, no need to redefined it
+  policyId = getTestnetAlchemyPolicyID();
 
   const entryPointAddress = getEntryPointAddress();
   const factoryAddress = getWalletFactoryAddress();
 
   // 2. initialize the provider and connect it to the account
+  // TODO: this instrically couples the workshop to use Alchemy - is this the expected behavior?
   let provider = new AlchemyProvider({
     apiKey: APIKEY,
     entryPointAddress,

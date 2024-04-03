@@ -11,8 +11,9 @@ pipeline=true
 blockchain_handler=true
 api_gateway=true
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-cd module1
+cd $SCRIPT_DIR/../../module1
 
 # wallets
 if [[ ${wallets} = true ]]; then

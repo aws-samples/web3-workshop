@@ -7,7 +7,7 @@ set -e
 # delete all files created during deployment and integration testing run
 rm -rf .jwt .john* package-lock.json package.json
 
-cd module1
+cd ../../module1
 
 cd frontend
 cdk destroy Web3WorkshopFrontEndStack --force || true
@@ -20,7 +20,7 @@ cd ..
 
 cd blockchain-handler
 cdk destroy Web3WorkshopBlockchainTransactionLambdaStack --force || true
-# todo has to be creted in the stack /web3/contracts/erc721/sentences/userophash
+# todo has to be created in the stack /web3/contracts/erc721/sentences/userophash
 aws ssm delete-parameter --region ${CDK_DEPLOY_REGION} --name /web3/contracts/erc721/sentences/userophash || true
 cd ..
 
@@ -33,7 +33,7 @@ rm -rf ContractRepo nft_pipeline_output.json
 cd ..
 
 cd wallets
-# todo check if venv is available -> then source otherwise ignor
+# todo check if venv is available -> then source otherwise ignore
 if [[ ! -d .venv ]]; then
     cdk destroy Web3WorkshopCognitoKMSStack --force || true
 else

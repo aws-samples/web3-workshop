@@ -113,34 +113,18 @@ export class BlockchainTransactionLambdaCdkStack extends cdk.Stack {
       '/web3/aa/account_factory_address'
     );
 
-    // Account Abstraction Mumbai API Key
-    // todo remove
-    const AA_API_KEY_MUMBAI = "empty"
-    // const AA_API_KEY_MUMBAI = ssm.StringParameter.valueForStringParameter(
-    //   this,
-    //   '/web3/aa/mumbai_api_key'
-    // );
-
     // Account Abstraction Goerli API Key
 
-    const AA_API_KEY_GOERLI = ssm.StringParameter.valueForStringParameter(
+    const AA_API_KEY_TESTNET = ssm.StringParameter.valueForStringParameter(
       this,
-      '/web3/aa/goerli_api_key'
+      '/web3/aa/alchemy_api_key'
     );
-
-    // Account Abstraction Mumbai Alchemy Policy ID
-    // todo remove 
-    const AA_POLICY_ID_MUMBAI = "empty"
-    // const AA_POLICY_ID_MUMBAI = ssm.StringParameter.valueForStringParameter(
-    //   this,
-    //   '/web3/aa/mumbai_alchemy_policy_id'
-    // );
 
     // Account Abstraction Goerli Alchemy Policy ID
 
-    const AA_POLICY_ID_GOERLI = ssm.StringParameter.valueForStringParameter(
+    const AA_POLICY_ID_TESTNET = ssm.StringParameter.valueForStringParameter(
       this,
-      '/web3/aa/goerli_alchemy_policy_id'
+      '/web3/aa/alchemy_testnet_policy_id'
     );
 
     // Graph indexer endpoint
@@ -163,10 +147,8 @@ export class BlockchainTransactionLambdaCdkStack extends cdk.Stack {
         RPC_ENDPOINT,
         AA_ENTRY_POINT_ADDRESS,
         AA_WALLET_FACTORY_ADDRESS,
-        AA_API_KEY_MUMBAI,
-        AA_API_KEY_GOERLI,
-        AA_POLICY_ID_MUMBAI,
-        AA_POLICY_ID_GOERLI,
+        AA_API_KEY_TESTNET,
+        AA_POLICY_ID_TESTNET,
         INDEXER_ENDPOINT
       },
       role: lambdaRole,
@@ -186,7 +168,7 @@ export class BlockchainTransactionLambdaCdkStack extends cdk.Stack {
 
     new ssm.StringParameter(this, 'Erc721SentencesParam', {
       parameterName: '/web3/contracts/erc721/sentences/address',
-      stringValue: 'none'
+      stringValue: 'none' 
     });
 
     new ssm.StringParameter(this, 'Erc721GenAiParam', {

@@ -10,14 +10,12 @@ deploy_smart_contract=true
 update_smart_contract_address=true
 
 jwt=${1}
-# echo $PWD
-# echo $SCRIPT_DIR
 
 if [[ ${deploy_smart_contract} = true ]]; then
     start=`date +%s`
     while true; do
         
-        userop_hash=$(./module1/blockchain-handler/scripts/deploy_smart_contract.sh ${jwt})
+        userop_hash=$($SCRIPT_DIR/../../module1/blockchain-handler/scripts/deploy_smart_contract.sh ${jwt})
         
         if [[ ${userop_hash} != *error* ]]; then
             break
@@ -27,11 +25,11 @@ if [[ ${deploy_smart_contract} = true ]]; then
         
     done
     
-    alchemy_goerli_api_key=$(aws ssm get-parameter --name "/web3/aa/goerli_api_key" --region ${CDK_DEPLOY_REGION} | jq -r ".Parameter.Value")
+    alchemy_api_key=$(aws ssm get-parameter --name "/web3/aa/alchemy_api_key" --region ${CDK_DEPLOY_REGION} | jq -r ".Parameter.Value")
     
     while true; do
         user_op_status=$(curl -s --request POST \
-            --url https://eth-goerli.g.alchemy.com/v2/${alchemy_goerli_api_key} \
+            --url ${rpc_endpoint}/${alchemy_api_key} \
             --header 'accept: application/json' \
             --header 'content-type: application/json' \
         --data '{"id": 1, "jsonrpc": "2.0", "method": "eth_getUserOperationByHash", "params": ['${userop_hash}']}')
@@ -51,5 +49,5 @@ if [[ ${deploy_smart_contract} = true ]]; then
 fi
 
 if [[ ${update_smart_contract_address} = true ]]; then
-    smart_contract_address=$(./module1/blockchain-handler/scripts/update_smart_contract_address.sh)
+    smart_contract_address=$($SCRIPT_DIR/../../module1/blockchain-handler/scripts/update_smart_contract_address.sh)
 fi
