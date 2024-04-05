@@ -6,10 +6,8 @@ set -e
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-cd module1
-
 # UI
-cd frontend
+cd $SCRIPT_DIR/../../module1/frontend
 
 start=`date +%s`
 npm install #&& npm audit fix --force
@@ -21,7 +19,7 @@ echo "Web3WorkshopFrontEndStack: ${frontend_runtime}s" >> ../deployment_times
 
 
 frontend_repo=$( cat frontend_output.json | jq -r '.Web3WorkshopFrontEndStack.FrontendCodeCommitCloneUrlGRC' )
-app_id=$( aws amplify list-apps --region ${CDK_DEPLOY_REGION} | jq -r '.apps[0].appId' )
+app_id=$( aws amplify list-apps --region ${CDK_DEPLOY_REGION} | jq -r '.apps[] | select(.name=="AmplifyAppWeb3WorkshopFrontend") | .appId' )
 
 if [[ ! -d web3-workshop-frontend ]]; then
     git clone ${frontend_repo}
