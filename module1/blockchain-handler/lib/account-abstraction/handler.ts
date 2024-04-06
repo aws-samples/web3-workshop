@@ -6,7 +6,7 @@ import {
   type SimpleSmartAccountOwner,
   UserOperationReceipt
 } from '@alchemy/aa-core';
-import { sepolia } from 'viem/chains';
+import { sepolia, polygonMumbai, avalancheFuji, Chain } from 'viem/chains';
 import { Lambda } from 'aws-sdk';
 import { ethers } from 'ethers';
 import { AlchemyProvider } from '@alchemy/aa-alchemy';
@@ -15,11 +15,9 @@ import {
   getSigningLambdaARN,
   getChainName,
   getChainID,
-  getMumbaiAPIKey,
   getTestnetAPIKey,
   getEntryPointAddress,
   getWalletFactoryAddress,
-  getMumbaiAlchemyPolicyID,
   getTestnetAlchemyPolicyID
 } from '../utils/parameters';
 import logger from '../utils/logger';
@@ -121,7 +119,7 @@ export async function sendUserOperation(
   userKeyID: string,
   sub: string
 ): Promise<string> {
-  const chainName = getChainName(); //TODO: fix this so we can get the right chain based on chainID and support multiple chains
+  const chainName = getChainName();
 
   logger.debug(
     `starting send user op for userkeyid ${userKeyID} and sub ${sub} and owneraddress ${signingAddress}`
@@ -130,27 +128,29 @@ export async function sendUserOperation(
 
   let APIKEY;
   let policyId;
-
-  const chain = sepolia; //TODO: fix this so we can support multiple chains. Should be part of the getChainName() function.
-
-  // do we nned this since we are getting the chainId using eth_chainId and instructing the user to create the proper API KEY on the Configuration Layer?
-  APIKEY = getTestnetAPIKey(); //this is already defined above, no need to redefined it
+  let chainConstruct: Chain;
+  APIKEY = getTestnetAPIKey();
   policyId = getTestnetAlchemyPolicyID();
-
+  chainConstruct = sepolia;
+  if (chainName === 'polygonMumbai') {
+    chainConstruct = polygonMumbai;
+  };
+  if (chainName === 'avalancheFuji') {
+    chainConstruct = avalancheFuji;
+  };
   const entryPointAddress = getEntryPointAddress();
   const factoryAddress = getWalletFactoryAddress();
 
   // 2. initialize the provider and connect it to the account
-  // TODO: this instrically couples the workshop to use Alchemy - is this the expected behavior?
   let provider = new AlchemyProvider({
     apiKey: APIKEY,
     entryPointAddress,
-    chain
+    chain: chainConstruct,
   }).connect(
     (rpcClient) =>
       new SimpleSmartContractAccount({
         entryPointAddress,
-        chain,
+        chain: chainConstruct,
         factoryAddress,
         rpcClient,
         owner

@@ -11,6 +11,7 @@ update_smart_contract_address=true
 
 jwt=${1}
 
+# TODO: add a counter so that we don't keep trying to deploy the contract forever
 if [[ ${deploy_smart_contract} = true ]]; then
     start=`date +%s`
     while true; do

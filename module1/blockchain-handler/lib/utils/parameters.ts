@@ -48,13 +48,8 @@ export function getChainID() {
   return getEnvironmentVariable('CHAIN_ID');
 }
 
-// do we really need this now we are getting chainId using eth_chainId? 
 export function getChainName() {
-  const chainId = getEnvironmentVariable('CHAIN_ID');
-
-  if (chainId == '11155111') {
-    return 'sepolia';
-  }
+  return getEnvironmentVariable('CHAIN_NAME');
 }
 
 export function getEntryPointAddress(): Address {

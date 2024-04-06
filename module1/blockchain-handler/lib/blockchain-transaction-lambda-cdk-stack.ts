@@ -94,6 +94,10 @@ export class BlockchainTransactionLambdaCdkStack extends cdk.Stack {
     // Blockchain ID
 
     const CHAIN_ID = ssm.StringParameter.valueForStringParameter(this, '/web3/chain_id');
+    
+    // Blokchain Name
+
+    const CHAIN_NAME = ssm.StringParameter.valueForStringParameter(this, '/web3/chain_name');
 
     // Ethereum node RPC endpoint
 
@@ -144,6 +148,7 @@ export class BlockchainTransactionLambdaCdkStack extends cdk.Stack {
         ARN_LAMBDA_SIGNING,
         ARN_S3_ASSET_BUCKET,
         CHAIN_ID,
+        CHAIN_NAME,
         RPC_ENDPOINT,
         AA_ENTRY_POINT_ADDRESS,
         AA_WALLET_FACTORY_ADDRESS,
