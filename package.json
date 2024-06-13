@@ -1,0 +1,15 @@
+{
+    "name": "Web3 Workshop",
+    "workspaces": [
+        "module1/api-gateway",
+        "module1/blockchain-handler",
+        "module1/frontend",
+        "module1/nft-pipeline",
+        "module1/parameters",
+        "module1/wallets",
+        "module2/chainquery",
+        "module2/genai_nfts",
+        "module2/graph_indexer",
+        "module2/sagemaker"
+    ]
+}
