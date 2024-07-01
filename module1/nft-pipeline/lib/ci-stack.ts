@@ -17,7 +17,7 @@ export class CiStack extends cdk.Stack {
 
     // Artifact bucket
     const solidityS3Bucket = new s3.Bucket(this, 'SolidityS3Bucket', {
-      removalPolicy: RemovalPolicy.DESTROY,
+      removalPolicy: RemovalPolicy.RETAIN, //otherwise deleting the stack fails with bucket not empty
       enforceSSL: true,
       encryption: s3.BucketEncryption.S3_MANAGED,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,

@@ -1,12 +1,10 @@
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
-import boto3
-
 import os
-
+import base64
+import boto3
 import eth_account
 import web3
-import base64
 import web3.eth
 from eth_account import Account
 from ecdsa import SigningKey, SECP256k1
@@ -45,16 +43,19 @@ def get_chain_id() -> int:
 
 def get_encrypted_kms_key(key_id: str) -> dict:
     kms_key_table = os.getenv("KMS_KEY_TABLE")
-
+    print(f"get_encrypted_kms_key key_id: {key_id}")
     try:
         encrypted_kms_key = client_ddb.get_item(
-            TableName=kms_key_table, Key={"key_id": {"S": key_id}}
+            TableName=kms_key_table, 
+            Key={"key_id": {"S": key_id}}
         )
     except Exception as e:
         raise Exception(
             f"exception happened getting encrypted key (key_id: {key_id}) from DynamoDB: {e}"
         )
-
+    
+    print(f"encrypted_kms_key DDB item: {encrypted_kms_key}")
+    
     if "Item" not in encrypted_kms_key:
         logger.warning(f"no encrypted key found for key_id: {key_id}")
         return {}
@@ -234,6 +235,8 @@ def lambda_handler(event, context):
         userop_hash = event["userop_hash"]
         key_id = event["key_id"]
         sub = event["sub"]
+        print(f"sign_op key_id: {key_id}")
+        print(f"sign_op sub: {sub}")
 
         try:
             userop_hash_signature = sign_userop(userop_hash, key_id, sub)
@@ -255,6 +258,8 @@ def lambda_handler(event, context):
         tx_hash = event["tx_hash"]
         key_id = event["key_id"]
         sub = event["sub"]
+        print(f"sign_tx key_id: {key_id}")
+        print(f"sign_tx sub: {sub}")
 
         try:
             tx_hash_signature = sign_tx(tx_hash, key_id, sub)

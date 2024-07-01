@@ -26,7 +26,7 @@ class Web3WorkshopCognitoKMSStack(Stack):
         ssm_rpc_endpoint_parameter = ssm.StringParameter.from_string_parameter_name(
             self,
             "ssmRPCEndpointParameter",
-            string_parameter_name="/web3/rpc_endpoint",
+            string_parameter_name="/web3/rpc_endpoint_counterfactual",
         )
 
         # instantiate ssm parameters as string parameters if runtime lookup happens in one of the Lambda functions

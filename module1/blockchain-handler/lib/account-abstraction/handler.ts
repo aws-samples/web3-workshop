@@ -6,7 +6,7 @@ import {
   type SimpleSmartAccountOwner,
   UserOperationReceipt
 } from '@alchemy/aa-core';
-import { polygonMumbai, goerli } from 'viem/chains';
+import { sepolia, polygonMumbai, avalancheFuji, Chain } from 'viem/chains';
 import { Lambda } from 'aws-sdk';
 import { ethers } from 'ethers';
 import { AlchemyProvider } from '@alchemy/aa-alchemy';
@@ -15,12 +15,10 @@ import {
   getSigningLambdaARN,
   getChainName,
   getChainID,
-  getMumbaiAPIKey,
-  getGoerliAPIKey,
+  getTestnetAPIKey,
   getEntryPointAddress,
   getWalletFactoryAddress,
-  getMumbaiAlchemyPolicyID,
-  getGoerliAlchemyPolicyID
+  getTestnetAlchemyPolicyID
 } from '../utils/parameters';
 import logger from '../utils/logger';
 
@@ -93,7 +91,7 @@ class SimpleKMSAccountOwner implements SimpleSmartAccountOwner {
 export async function getUserOperationReceipt(hash: Address): Promise<UserOperationReceipt> {
   logger.debug(`starting get user op receipt for hash ${hash}`);
 
-  const APIKEY = getGoerliAPIKey();
+  const APIKEY = getTestnetAPIKey();
   const entryPointAddress = getEntryPointAddress();
   const chainId = Number(getChainID());
   const provider = new AlchemyProvider({
@@ -123,8 +121,6 @@ export async function sendUserOperation(
 ): Promise<string> {
   const chainName = getChainName();
 
-  const isMumbai = chainName == 'mumbai' ? true : false;
-
   logger.debug(
     `starting send user op for userkeyid ${userKeyID} and sub ${sub} and owneraddress ${signingAddress}`
   );
@@ -132,17 +128,16 @@ export async function sendUserOperation(
 
   let APIKEY;
   let policyId;
-
-  const chain = isMumbai ? polygonMumbai : goerli;
-
-  if (isMumbai) {
-    APIKEY = getMumbaiAPIKey();
-    policyId = getMumbaiAlchemyPolicyID();
-  } else {
-    APIKEY = getGoerliAPIKey();
-    policyId = getGoerliAlchemyPolicyID();
-  }
-
+  let chainConstruct: Chain;
+  APIKEY = getTestnetAPIKey();
+  policyId = getTestnetAlchemyPolicyID();
+  chainConstruct = sepolia;
+  if (chainName === 'polygonMumbai') {
+    chainConstruct = polygonMumbai;
+  };
+  if (chainName === 'avalancheFuji') {
+    chainConstruct = avalancheFuji;
+  };
   const entryPointAddress = getEntryPointAddress();
   const factoryAddress = getWalletFactoryAddress();
 
@@ -150,12 +145,12 @@ export async function sendUserOperation(
   let provider = new AlchemyProvider({
     apiKey: APIKEY,
     entryPointAddress,
-    chain
+    chain: chainConstruct,
   }).connect(
     (rpcClient) =>
       new SimpleSmartContractAccount({
         entryPointAddress,
-        chain,
+        chain: chainConstruct,
         factoryAddress,
         rpcClient,
         owner
