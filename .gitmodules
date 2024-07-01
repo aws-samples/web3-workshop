@@ -1,0 +1,6 @@
+[submodule "module1/nft-pipeline/repo/lib/openzeppelin-contracts"]
+	path = module1/nft-pipeline/repo/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "module1/nft-pipeline/repo/lib/forge-std"]
+	path = module1/nft-pipeline/repo/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std

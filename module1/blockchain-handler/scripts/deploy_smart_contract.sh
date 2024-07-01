@@ -5,7 +5,6 @@ set +x
 set -e
 
 jwt=${1}
-
 lambda_function_arn=$(aws ssm get-parameter --name "/app/nft/lambda_arn" --region ${CDK_DEPLOY_REGION} | jq -r ".Parameter.Value")
 
 # not compatibile with jq < 1.6

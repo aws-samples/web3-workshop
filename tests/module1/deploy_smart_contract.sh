@@ -12,6 +12,7 @@ update_smart_contract_address=true
 jwt=${1}
 
 # TODO: add a counter so that we don't keep trying to deploy the contract forever
+echo "Starting the deployment of the smart contract..."
 if [[ ${deploy_smart_contract} = true ]]; then
     start=`date +%s`
     while true; do
@@ -25,12 +26,20 @@ if [[ ${deploy_smart_contract} = true ]]; then
         sleep 10
         
     done
-    
-    alchemy_api_key=$(aws ssm get-parameter --name "/web3/aa/alchemy_api_key" --region ${CDK_DEPLOY_REGION} | jq -r ".Parameter.Value")
+    echo "Smart contract deployed. Getting the deployment_params from SSM"
+    deployment_params=$(aws ssm get-parameters --region ${CDK_DEPLOY_REGION} --name \
+    "/web3/aa/alchemy_api_key" \
+    "/web3/rpc_endpoint" \
+    --query "Parameters[*].{Name:Name,Value:Value}" | jq 'INDEX(.Name)'
+    )
+
+    alchemy_api_key=$(echo ${deployment_params} | jq -r '."/web3/aa/alchemy_api_key".Value')
+    rpc_endpoint=$(echo ${deployment_params} | jq -r '."/web3/rpc_endpoint".Value')
     
     while true; do
+        echo "Getting user op status..."
         user_op_status=$(curl -s --request POST \
-            --url ${rpc_endpoint}/${alchemy_api_key} \
+            --url ${rpc_endpoint} \
             --header 'accept: application/json' \
             --header 'content-type: application/json' \
         --data '{"id": 1, "jsonrpc": "2.0", "method": "eth_getUserOperationByHash", "params": ['${userop_hash}']}')
@@ -39,16 +48,21 @@ if [[ ${deploy_smart_contract} = true ]]; then
         if [[ -z ${user_op_result} ]]; then
             echo "User operation not mined yet"
         else
+            echo "Got user op status: ${user_op_result}."
             break
         fi
         sleep 5
     done
     end=`date +%s`
-    
+    echo "User operation has been mined. Updating the new contract address in SSM."
     user_operation_runtime=$( echo "$end - $start" | bc -l )
     echo "Smart Contract deploy UserOp confirmation: ${user_operation_runtime}s" >> ../deployment_times
 fi
 
 if [[ ${update_smart_contract_address} = true ]]; then
+    echo "Updating the smart contract address"
+    # Sleep to allow for user operation receipt to be indexed
+    sleep 30
     smart_contract_address=$($SCRIPT_DIR/../../module1/blockchain-handler/scripts/update_smart_contract_address.sh)
+    echo "Smart contract address: ${smart_contract_address}"
 fi

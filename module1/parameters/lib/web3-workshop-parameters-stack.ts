@@ -4,8 +4,8 @@ import * as cdk from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import axios, { AxiosResponse } from 'axios';
-import { getDefaultEntryPointAddress, getDefaultSimpleAccountFactoryAddress } from "@alchemy/aa-core";
-import { getChain } from '@alchemy/aa-core';
+import { getDefaultSimpleAccountFactoryAddress } from "@alchemy/aa-core";
+import { getChain, getEntryPoint } from '@alchemy/aa-core';
 
 // get chain information based on the RPC endpoint URL
 interface Options {
@@ -22,16 +22,16 @@ interface Options {
   }
 }
 
-interface ChainInfo { 
+interface ChainInfo {
   chainId: number,
   chainName: string,
   defaultEntryPointAddress: string,
   defaultSimpleAccountFactoryAddress: string,
 }
 
-async function getChainInfo(): Promise<ChainInfo> { 
+async function getChainInfo(): Promise<ChainInfo> {
   return new Promise(async (resolve, reject) => {
-    try { 
+    try {
       const options: Options = {
         method: 'POST',
         url: `${process.env.RPC_ENDPOINT}`, //depends on the user exporting the RPC_ENDPOINT on the terminal before running `cdk deploy`.
@@ -43,17 +43,17 @@ async function getChainInfo(): Promise<ChainInfo> {
       };
 
       const response: AxiosResponse = await axios.request(options) as any;
-      const chain = getChain(parseInt(response.data.result)); 
-      const defaultEntryPointAddress: string = getDefaultEntryPointAddress(chain);
+      const chain = getChain(parseInt(response.data.result));
+      const defaultEntryPointAddress: string = getEntryPoint(chain).address;
       const defaultSimpleAccountFactoryAddress: string = getDefaultSimpleAccountFactoryAddress(chain);
-      const chainInfo: ChainInfo = { 
+      const chainInfo: ChainInfo = {
         chainId: parseInt(response.data.result),
         chainName: (chain.name).toLowerCase(),
         defaultEntryPointAddress,
         defaultSimpleAccountFactoryAddress,
       }
       resolve(chainInfo);
-    } catch { 
+    } catch {
       const chainInfo: ChainInfo = {
         chainId: 11155111,
         chainName: 'sepolia',
@@ -77,38 +77,10 @@ export class Web3WorkshopParametersStack extends cdk.Stack {
       noEcho: true,
     });
 
-    const chainId = new cdk.CfnParameter(this, 'chainId', {
-      description: 'Blockchain chainId',
-      default: '11155111',     
-    });
-
-    const chainName = new cdk.CfnParameter(this, 'chainName', {
-      description: 'Blockchain chainName',
-      default: 'sepolia',
-    });
-
     const paymasterEndpoint = new cdk.CfnParameter(this, 'paymasterEndpoint', {
       description: 'Paymaster endpoint',
       default: 'my.paymaster.endpoint',
     });
-    
-    const aaEntrypointAddress = new cdk.CfnParameter(
-      this,
-      'aaEntryPointAddress',
-      {
-        description: 'AA Entrypoint smart contract address ',
-        default: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
-      }
-    )
-
-    const aaAccountFactoryAddress = new cdk.CfnParameter(
-      this,
-      'aaAccountFactoryAddress',
-      {
-        description: 'AA AccountFactory smart contract address',
-        default: '0x9406Cc6185a346906296840746125a0E44976454',
-      }
-    )
 
     const alchemyPolicyId = new cdk.CfnParameter(this,
       'alchemyPolicyId',
@@ -122,7 +94,7 @@ export class Web3WorkshopParametersStack extends cdk.Stack {
     const alchemyTestnetAPIKey = new cdk.CfnParameter(this,
       'alchemyTestnetAPIKey',
       {
-        description: 'The Alchemy API Key for the a Testnet network - as a default, we use Sepolia',
+        description: 'The Alchemy API Key for the Testnet network - as a default, we use Sepolia',
         noEcho: true,
       }
     )
@@ -162,14 +134,14 @@ export class Web3WorkshopParametersStack extends cdk.Stack {
       stringValue: 'none',
       parameterName: '/web3/paymaster_endpoint',
     })
-    
+
     getChainInfo().then(chainInfo => {
       console.log(`Got chain information: \nName: ${chainInfo.chainName}\nId: ${chainInfo.chainId}\nEntryPointAddress: ${chainInfo.defaultEntryPointAddress}\nAccountFactoryAddress: ${chainInfo.defaultSimpleAccountFactoryAddress}`);
       new ssm.StringParameter(this, 'chainNameSSMParameter', {
         stringValue: chainInfo.chainName,
         parameterName: '/web3/chain_name',
       });
-      
+
       new ssm.StringParameter(this, 'chainIdSSMParameter', {
         stringValue: (chainInfo.chainId).toString(),
         parameterName: '/web3/chain_id',

@@ -49,7 +49,7 @@ Parameters can be specified during deployment step via `--parameters <parmeterNa
 <!-- TODO to be updated after module 1 has been finalized -->
 * **alchemyPolicyId**: (required)
     * SSM parameter path: `/web3/aa/alchemy_policy_id`
-* **alchemyGoerliAPIKey**: (required)
+* **alchemyTestnetAPIKey**: (required)
     * SSM parameter path: `/web3/aa/alchemy_api_key`
 * **nftStorageAPIToken**: (required)
     * SSM parameter path: `/web3/nftstorage/apitoken`
@@ -57,15 +57,10 @@ Parameters can be specified during deployment step via `--parameters <parmeterNa
     * SSM parameter path: `/app/sagemaker/endpoint/apiurl`
 * **sagemakerEndpointAPIKEY**: (required)
     * SSM parameter path: `/app/sagemaker/endpoint/apikey`
-* **rpcEndpoint**: 
+* **rpcEndpoint**: (required)
     * SSM parameter path: `/web3/rpc_endpoint`
 * **indexerEndpoint**: (optional)
     * SSM parameter path: `/web3/indexer_endpoint`
-* **aaEntrypointAddress**: (optional)
-    * SSM parameter path: `/web3/aa/entrypoint_address`
-* **aaAccountFactoryAddress**: (optional)
-    * SSM parameter path: `/web3/aa/account_factory_address`
-
 
 ### Log Level
 * Default `log_level`(**WARNING**) is being propagated under SSM path: `/app/log_level`
