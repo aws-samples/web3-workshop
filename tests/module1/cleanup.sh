@@ -4,10 +4,15 @@
 set +x
 set -e
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+# file template located in .env.example
+source ${SCRIPT_DIR}/.env
+
 # delete all files created during deployment and integration testing run
 rm -rf .jwt .john* package-lock.json package.json
 
-cd ../../module1
+cd ${SCRIPT_DIR}/../../module1
 
 cd frontend
 cdk destroy Web3WorkshopFrontEndStack --force || true

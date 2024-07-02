@@ -5,7 +5,6 @@ set +x
 set -e
 
 # list of modules
-
 wallets=true
 pipeline=true
 blockchain_handler=true
