@@ -5,14 +5,14 @@ set +x
 set -e
 
 # list of modules
-
 wallets=true
 pipeline=true
 blockchain_handler=true
 api_gateway=true
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-cd module1
+cd $SCRIPT_DIR/../../module1
 
 # wallets
 if [[ ${wallets} = true ]]; then
@@ -63,7 +63,8 @@ if [[ ${pipeline} = true ]]; then
     
     git add -u
     git commit -m "updated max nfts per address parameter"
-    git push
+    # We do a force in case we need to redeploy this CDK, since CDK destroy does not delete the CodeCommit repo
+    git push --force
     cd ..
     
     cd ..

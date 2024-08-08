@@ -4,3 +4,4 @@ asn1tools==0.166.0
 urllib3==1.26.18
 aws-lambda-powertools==2.15.0
 ecdsa==0.18.0
+eth-account<=0.12.1

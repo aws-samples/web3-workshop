@@ -3,15 +3,15 @@
 // SPDX-License-Identifier: MIT-0
 import 'source-map-support/register';
 import { App, Aspects } from 'aws-cdk-lib';
-import { Web3WorkshopParametersStack } from '../lib/web3-workshop-parameters-stack'
-import { AwsSolutionsChecks } from 'cdk-nag'
+import { FrontEndStack } from '../lib/frontend-stack';
+import { AwsSolutionsChecks } from 'cdk-nag';
 
 const app = new App();
-new Web3WorkshopParametersStack(app, 'Web3WorkshopParametersStack', {
+new FrontEndStack(app, 'Web3WorkshopFrontEndStack', {
     env: {
         account: process.env.CDK_DEPLOY_ACCOUNT,
         region: process.env.CDK_DEPLOY_REGION
     }
-})
+});
 
-Aspects.of(app).add(new AwsSolutionsChecks())
+Aspects.of(app).add(new AwsSolutionsChecks());

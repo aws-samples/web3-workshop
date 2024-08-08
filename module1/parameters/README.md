@@ -32,7 +32,12 @@ npx aws-cdk@2.x synth
 ```
 
 ```shell
-npx aws-cdk@2.x deploy --parameters rpcEndpoint=https://my.rpc.node/<my-token>
+npx aws-cdk@2.x deploy \n--parameters rpcEndpoint=https://my.rpc.node/<my_token> \n--parameters alchemyPolicyId=<policy_id> \n--parameters alchemyTestnetAPIKey=<my_api_key> \n--parameters nftStorageAPIToken=<nft_storage_token> \n--parameters paymasterEndpoint=<https://my.paymaster.com>
+```
+
+Example:
+```shell
+npx aws-cdk@2.x deploy \n--parameters rpcEndpoint=https://eth-sepolia.g.alchemy.com/v2/demo \n--parameters alchemyPolicyId=123456a7-ab12-1a23-a123-12a3bc45678d \n--parameters alchemyTestnetAPIKey=demo \n--parameters nftStorageAPIToken=1234567890abcdef \n--parameters paymasterEndpoint=https://eth-sepolia.g.alchemy.com/v2/demo
 ```
 
 
@@ -44,25 +49,18 @@ Parameters can be specified during deployment step via `--parameters <parmeterNa
 <!-- TODO to be updated after module 1 has been finalized -->
 * **alchemyPolicyId**: (required)
     * SSM parameter path: `/web3/aa/alchemy_policy_id`
-* **alchemyGoerliAPIKey**: (required)
-    * SSM parameter path: `/web3/aa/goerli_api_key`
+* **alchemyTestnetAPIKey**: (required)
+    * SSM parameter path: `/web3/aa/alchemy_api_key`
 * **nftStorageAPIToken**: (required)
     * SSM parameter path: `/web3/nftstorage/apitoken`
 * **sagemakerEndpointAPIURL**: (required)
     * SSM parameter path: `/app/sagemaker/endpoint/apiurl`
 * **sagemakerEndpointAPIKEY**: (required)
     * SSM parameter path: `/app/sagemaker/endpoint/apikey`
-
-* **rpcEndpoint**: (optional)
+* **rpcEndpoint**: (required)
     * SSM parameter path: `/web3/rpc_endpoint`
 * **indexerEndpoint**: (optional)
     * SSM parameter path: `/web3/indexer_endpoint`
-* **aaEntrypointAddress**: (optional)
-    * SSM parameter path: `/web3/aa/entrypoint_address`
-* **aaAccountFactoryAddress**: (optional)
-    * SSM parameter path: `/web3/aa/account_factory_address`
-* **chainId**: (optional)
-    * SSM parameter path: `/web3/chain_id`
 
 ### Log Level
 * Default `log_level`(**WARNING**) is being propagated under SSM path: `/app/log_level`

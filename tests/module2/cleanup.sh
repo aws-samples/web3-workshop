@@ -26,6 +26,7 @@ cd genai_nfts/genai-api-gateway
 genai_s3_bucket_arn=$(aws ssm get-parameter --name /app/assets/s3_bucket_genai --region ${CDK_DEPLOY_REGION} | jq -r ".Parameter.Value") || true
 genai_s3_bucket_name=$(echo ${genai_s3_bucket_arn} | cut -d: -f6) || true
 aws s3 rm s3://${genai_s3_bucket_name} --recursive || true
+aws codecommit delete-repository --region ${CDK_DEPLOY_REGION} --repository-name GenAINFT || true
 cdk destroy Web3WorkshopGenAILambdaStack Web3WorkshopIPFSLambdaStack Web3WorkshopGenAIApiGatewayStack --force || true
 cd ../..
 

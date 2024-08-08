@@ -4,10 +4,15 @@
 set +x
 set -e
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+# file template located in .env.example
+source ${SCRIPT_DIR}/.env
+
 # delete all files created during deployment and integration testing run
 rm -rf .jwt .john* package-lock.json package.json
 
-cd module1
+cd ${SCRIPT_DIR}/../../module1
 
 cd frontend
 cdk destroy Web3WorkshopFrontEndStack --force || true
@@ -20,7 +25,7 @@ cd ..
 
 cd blockchain-handler
 cdk destroy Web3WorkshopBlockchainTransactionLambdaStack --force || true
-# todo has to be creted in the stack /web3/contracts/erc721/sentences/userophash
+# todo has to be created in the stack /web3/contracts/erc721/sentences/userophash
 aws ssm delete-parameter --region ${CDK_DEPLOY_REGION} --name /web3/contracts/erc721/sentences/userophash || true
 cd ..
 
@@ -28,12 +33,13 @@ cd nft-pipeline
 solidity_s3_bucket_arn=$(aws ssm get-parameter --name /app/assets/s3bucketurl --region ${CDK_DEPLOY_REGION} | jq -r ".Parameter.Value") || true
 solidity_s3_bucket_name=$(echo ${solidity_s3_bucket_arn} | cut -d: -f6) || true
 aws s3 rm s3://${solidity_s3_bucket_name} --recursive || true
+aws codecommit delete-repository --region ${CDK_DEPLOY_REGION} --repository-name ContractRepo || true
 cdk destroy Web3WorkshopNFTPipelineStack --force || true
 rm -rf ContractRepo nft_pipeline_output.json
 cd ..
 
 cd wallets
-# todo check if venv is available -> then source otherwise ignor
+# todo check if venv is available -> then source otherwise ignore
 if [[ ! -d .venv ]]; then
     cdk destroy Web3WorkshopCognitoKMSStack --force || true
 else

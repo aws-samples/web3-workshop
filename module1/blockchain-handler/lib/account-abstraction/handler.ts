@@ -6,7 +6,7 @@ import {
   type SimpleSmartAccountOwner,
   UserOperationReceipt
 } from '@alchemy/aa-core';
-import { polygonMumbai, goerli } from 'viem/chains';
+import { sepolia, polygonMumbai, avalancheFuji, Chain } from 'viem/chains';
 import { Lambda } from 'aws-sdk';
 import { ethers } from 'ethers';
 import { AlchemyProvider } from '@alchemy/aa-alchemy';
@@ -14,13 +14,10 @@ import { AlchemyProvider } from '@alchemy/aa-alchemy';
 import {
   getSigningLambdaARN,
   getChainName,
-  getChainID,
-  getMumbaiAPIKey,
-  getGoerliAPIKey,
+  getTestnetAPIKey,
   getEntryPointAddress,
   getWalletFactoryAddress,
-  getMumbaiAlchemyPolicyID,
-  getGoerliAlchemyPolicyID
+  getTestnetAlchemyPolicyID
 } from '../utils/parameters';
 import logger from '../utils/logger';
 
@@ -82,7 +79,7 @@ class SimpleKMSAccountOwner implements SimpleSmartAccountOwner {
     };
     const signedPayload = await callSigningFunction(Buffer.from(JSON.stringify(signerPayload)));
     logger.debug(`signed payload is ${signedPayload}`);
-    return signedPayload as Address;
+    return `0x${signedPayload}` as Address;
   }
 
   async getAddress(): Promise<Address> {
@@ -90,17 +87,38 @@ class SimpleKMSAccountOwner implements SimpleSmartAccountOwner {
   }
 }
 
-export async function getUserOperationReceipt(hash: Address): Promise<UserOperationReceipt> {
-  logger.debug(`starting get user op receipt for hash ${hash}`);
+function getChainConstruct() {
+  let chainConstruct: Chain;
+  const chainName = getChainName();
 
-  const APIKEY = getGoerliAPIKey();
+  chainConstruct = sepolia;
+  if (chainName === 'polygonMumbai') {
+    chainConstruct = polygonMumbai;
+  };
+  if (chainName === 'avalancheFuji') {
+    chainConstruct = avalancheFuji;
+  };
+  return chainConstruct;
+}
+
+function getAlchemyProvider() {
+  const chainConstruct = getChainConstruct();
+  let APIKEY;
+  APIKEY = getTestnetAPIKey();
+
   const entryPointAddress = getEntryPointAddress();
-  const chainId = Number(getChainID());
-  const provider = new AlchemyProvider({
+
+  let provider = new AlchemyProvider({
     apiKey: APIKEY,
     entryPointAddress,
-    chain: chainId
-  });
+    chain: chainConstruct,
+  })
+  return provider;
+}
+
+export async function getUserOperationReceipt(hash: Address): Promise<UserOperationReceipt> {
+  logger.debug(`starting get user op receipt for hash ${hash}`);
+  const provider = getAlchemyProvider();
 
   const data = await provider.getUserOperationReceipt(hash);
   return data;
@@ -123,39 +141,23 @@ export async function sendUserOperation(
 ): Promise<string> {
   const chainName = getChainName();
 
-  const isMumbai = chainName == 'mumbai' ? true : false;
-
   logger.debug(
     `starting send user op for userkeyid ${userKeyID} and sub ${sub} and owneraddress ${signingAddress}`
   );
   const owner = new SimpleKMSAccountOwner(userKeyID, sub, signingAddress);
 
-  let APIKEY;
-  let policyId;
-
-  const chain = isMumbai ? polygonMumbai : goerli;
-
-  if (isMumbai) {
-    APIKEY = getMumbaiAPIKey();
-    policyId = getMumbaiAlchemyPolicyID();
-  } else {
-    APIKEY = getGoerliAPIKey();
-    policyId = getGoerliAlchemyPolicyID();
-  }
-
   const entryPointAddress = getEntryPointAddress();
   const factoryAddress = getWalletFactoryAddress();
+  let policyId = getTestnetAlchemyPolicyID();
+  let chainConstruct = getChainConstruct();
 
   // 2. initialize the provider and connect it to the account
-  let provider = new AlchemyProvider({
-    apiKey: APIKEY,
-    entryPointAddress,
-    chain
-  }).connect(
+  let provider = getAlchemyProvider();
+  provider.connect(
     (rpcClient) =>
       new SimpleSmartContractAccount({
         entryPointAddress,
-        chain,
+        chain: chainConstruct,
         factoryAddress,
         rpcClient,
         owner
