@@ -10,8 +10,8 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@aws-sdk/client-s3": "3.374.0",
-    "@aws-sdk/client-ssm": "3.370.0",
+    "@aws-sdk/client-s3": "3.627.0",
+    "@aws-sdk/client-ssm": "3.624.0",
     "@types/aws-lambda": "8.10.119",
     "amazon-s3-uri": "0.1.1",
     "nft.storage": "3.4.0"
