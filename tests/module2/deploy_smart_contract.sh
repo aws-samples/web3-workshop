@@ -34,9 +34,6 @@ if [[ ${deploy_gen_ai_smart_contract} = true ]]; then
     alchemy_api_key=$(echo ${deployment_params} | jq -r '."/web3/aa/alchemy_api_key".Value')
     rpc_endpoint=$(echo ${deployment_params} | jq -r '."/web3/rpc_endpoint".Value')
     
-    
-    # alchemy_goerli_api_key=$(aws ssm get-parameter --name "/web3/aa/goerli_api_key" --region ${CDK_DEPLOY_REGION} | jq -r ".Parameter.Value" )
-    
     while true; do
         echo "Getting user op status..."
         user_op_status=$(curl -s --request POST \
