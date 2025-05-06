@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@aws-cdk/aws-amplify-alpha": "2.88.0-alpha.0",
-    "aws-cdk-lib": "2.88.0",
+    "aws-cdk-lib": "2.189.1",
     "cdk-nag": "2.27.68",
     "constructs": "10.2.24",
     "eslint": "8.44.0",
