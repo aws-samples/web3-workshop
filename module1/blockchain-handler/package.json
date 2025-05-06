@@ -38,7 +38,7 @@
     "@thirdweb-dev/storage": "1.2.0",
     "abitype": "0.8.9",
     "alchemy-sdk": "2.9.0",
-    "aws-cdk-lib": "2.88.0",
+    "aws-cdk-lib": "2.194.0",
     "aws-sdk": "2.1357.0",
     "axios": "1.8.3",
     "cdk-nag": "2.27.67",
