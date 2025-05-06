@@ -1,6 +1,7 @@
 # web3-workshop
 
-This repository contains all artifacts for the [Build Web3 on AWS](https://catalog.workshops.aws/buildweb3) workshop.
+> [!WARNING]
+> This repository contains the sources for a deprecated workshop. It is READ ONLY and will not be updated any further.
 
 ## Deployment
 
@@ -22,11 +23,11 @@ To run e2e integration tests for module 1, execute the following steps:
 
 3. Ensure that you have your [`aws cli` configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) correctly and have it pointing to the right AWS account.
 
-4. Export the required `CDK` environment variables to configure the AWS region and account used for the deployment. 
+4. Export the required `CDK` environment variables to configure the AWS region and account used for the deployment.
    ```sh
    export CDK_DEPLOY_REGION=us-east-1
    export CDK_DEPLOY_ACCOUNT=$(aws sts get-caller-identity | jq -r '.Account')
-   ``` 
+   ```
 
 5. Run the e2e script:
    ```sh
