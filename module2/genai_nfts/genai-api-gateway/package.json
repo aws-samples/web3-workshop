@@ -22,7 +22,7 @@
   "dependencies": {
     "@aws-cdk/aws-lambda-python-alpha": "^2.88.0-alpha.0",
     "amazon-s3-uri": "0.1.1",
-    "aws-cdk-lib": "2.88.0",
+    "aws-cdk-lib": "2.189.1",
     "cdk-nag": "2.21.22",
     "constructs": "10.2.69",
     "nft.storage": "3.4.0",
