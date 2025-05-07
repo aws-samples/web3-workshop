@@ -16,7 +16,7 @@
   "dependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "2.88.0-alpha.0",
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.88.0-alpha.0",
-    "aws-cdk-lib": "2.88.0",
+    "aws-cdk-lib": "2.189.1",
     "cdk-nag": "2.27.59",
     "constructs": "10.2.68",
     "graphql": "16.8.1",
