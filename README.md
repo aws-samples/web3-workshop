@@ -3,11 +3,6 @@
 > [!WARNING]
 > This repository contains the sources for a deprecated workshop. It is READ ONLY and will not be updated any further.
 
-## Deployment
-
-The detailed deployment instructions can be found in the workshop [Build Web3 on AWS](https://catalog.workshops.aws/buildweb3).
-
-
 ## Development
 
 ### Module 1
@@ -64,4 +59,3 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 ## License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
-
